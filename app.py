@@ -1,5 +1,8 @@
 from cas import CASClient
+import datetime
 from flask import Flask, redirect, render_template, request, session, url_for
+from apiclient.discovery import build
+from oauth2client import client
 
 app = Flask(__name__)
 app.secret_key = "pupBxUMCEkX78RY8GABNgyaq"
@@ -16,10 +19,62 @@ def index():
 
 @app.route("/events")
 def events():
-    if "username" in session:
-        return render_template("events.html", username=session["username"], 
-                                    displayname = session["displayname"])
-    return redirect(url_for("index"))
+    if "username" not in session:
+        return redirect(url_for("index"))
+    
+    event_summaries = []
+    if "credentials" in session:
+
+        creds = client.OAuth2Credentials.from_json(session["credentials"])
+        service = build('calendar', 'v3', credentials=creds)
+        now = datetime.datetime.utcnow().isoformat() + 'Z'
+        events_result = service.events().list(calendarId="primary",
+                                        timeMin=now, maxResults=10,
+                                        singleEvents=True, orderBy="startTime"
+                                        ).execute()
+        events = events_result.get("items", [])
+
+        if events:
+            for event in events:
+                event_summaries.append(event["summary"])
+
+    print(event_summaries)
+
+    return render_template("events.html", username=session["username"], 
+                                    displayname=session["displayname"],
+                                    events=event_summaries)
+
+@app.route("/importgcal")
+def importgcal():
+    if "username" not in session:
+        return redirect(url_for("index"))
+
+    if "credentials" not in session:
+        return redirect(url_for("oauth2callback"))
+
+    credentials = client.OAuth2Credentials.from_json(session["credentials"])
+    
+    if credentials.access_token_expired:
+        return redirect(url_for("oauth2callback"))
+
+    return redirect(url_for("events"))
+
+@app.route("/oauth2callback")
+def oauth2callback():
+    flow = client.flow_from_clientsecrets(
+        "client_secret.json",
+        scope = "https://www.googleapis.com/auth/calendar",
+        redirect_uri = url_for("oauth2callback", _external=True)
+    )
+
+    if "code" not in request.args:
+        auth_uri = flow.step1_get_authorize_url()
+        return redirect(auth_uri)
+
+    auth_code = request.args.get("code")
+    credentials = flow.step2_exchange(auth_code)
+    session["credentials"] = credentials.to_json()
+    return redirect(url_for("importgcal"))
 
 @app.route("/login")
 def login():
@@ -34,9 +89,6 @@ def login():
         return redirect(cas_login_url)
 
     user, attributes, pgtiou = cas_client.verify_ticket(ticket)
-    print(user)
-    print(attributes)
-    print(pgtiou)
 
     if not user:
         return "Failed to verify ticket."
