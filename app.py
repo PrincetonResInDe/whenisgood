@@ -3,14 +3,16 @@ import datetime
 from flask import Flask, redirect, render_template, request, session, url_for
 from apiclient.discovery import build
 from oauth2client import client
+import json
+import os
 
 app = Flask(__name__)
-app.secret_key = "pupBxUMCEkX78RY8GABNgyaq"
+app.secret_key = os.environ.get("APP_SECRET_KEY")
 
 cas_client = CASClient(
     version = 3,
-    service_url = "http://localhost:5000/login?next=%2Fevents",
-    server_url = "https://fed.princeton.edu/cas/"
+    service_url = os.environ.get("CAS_SERVICE_URL"),
+    server_url = os.environ.get("CAS_SERVER_URL")
 )
 
 @app.route("/")
@@ -61,8 +63,8 @@ def importgcal():
 
 @app.route("/oauth2callback")
 def oauth2callback():
-    flow = client.flow_from_clientsecrets(
-        "client_secret.json",
+    flow = client.flow_from_clientsecrets( # store client secret as config var
+        "client_secret.json",              # create json file on program start
         scope = "https://www.googleapis.com/auth/calendar",
         redirect_uri = url_for("oauth2callback", _external=True)
     )
@@ -111,4 +113,6 @@ def logout_callback():
 
 
 if __name__ == "__main__":
+    with open("client_secret.json", "w") as f:
+        json.dump(json.loads(os.environ.get("GOOGLE_CLIENT_SECRET")), f)
     app.run()
