@@ -5,6 +5,7 @@ from flask import Flask, redirect, render_template, request, session, url_for
 import json
 from oauth2client import client
 import os
+import mysql.connector
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("APP_SECRET_KEY")
@@ -14,6 +15,13 @@ cas_client = CASClient(
     service_url = os.environ.get("CAS_SERVICE_URL"),
     server_url = os.environ.get("CAS_SERVER_URL")
 )
+
+db = mysql.connector.connect(
+	host=os.environ.get("DB_HOST"),
+    database=os.environ.get("DB_NAME"),
+    user=os.environ.get("DB_USER"),
+    password=os.environ.get("DB_PASSWORD")
+).cursor()
 
 @app.route("/")
 def index():
@@ -35,24 +43,18 @@ def event():
 def login():
     if "netID" in session:
         return redirect(url_for("index"))
-
     next = request.args.get("next")
     ticket = request.args.get("ticket")
-
     if not ticket:
         cas_login_url = cas_client.get_login_url()
         return redirect(cas_login_url)
-
     user, attributes, pgtiou = cas_client.verify_ticket(ticket)
-
     if not user:
         return "Failed to verify ticket."
-
     session["netID"] = user
-    
+    session["name"] = attributes["displayname"]
     if "eventID" in session:
         return redirect(url_for("event", id=session["eventID"]))
-
     return redirect(next)
 
 @app.route("/logout")
