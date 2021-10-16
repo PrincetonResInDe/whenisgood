@@ -21,12 +21,19 @@ db = mysql.connector.connect(
     database=os.environ.get("DB_NAME"),
     user=os.environ.get("DB_USER"),
     password=os.environ.get("DB_PASSWORD")
-).cursor()
+)
+db_cursor = db.cursor()
 
 @app.route("/")
 def index():
     if "netID" not in session:
         return redirect(url_for("login"))
+    db_cursor.callproc("getEvents", (session["netID"],))
+    for result in db_cursor.stored_results():
+        for column in result.description:
+            print(column[0])
+        for row in result.fetchall():
+            print(row)
     return "render template for events list here"
 
 @app.route("/event")
@@ -38,6 +45,24 @@ def event():
     if not eventID:
         return redirect(url_for("index"))
     return "eventID: {}".format(eventID)
+
+@app.route("/create") # methods = ["GET", "POST"]
+def create():
+    if "netID" not in session:
+        return redirect(url_for("login"))
+    # db_cursor.callproc("addEvent", ...)
+    return "event creation page"
+
+@app.route("/results")
+def results():
+    if "netID" not in session:
+        return redirect(url_for("login"))
+
+@app.route("/api")
+def api():
+    if "netID" not in session:
+        return redirect(url_for("login"))
+    return "api"
 
 @app.route("/login")
 def login():
@@ -53,6 +78,8 @@ def login():
         return "Failed to verify ticket."
     session["netID"] = user
     session["name"] = attributes["displayname"]
+    db_cursor.callproc("login", (session["netID"], session["name"]))
+    db.commit()
     if "eventID" in session:
         return redirect(url_for("event", id=session["eventID"]))
     return redirect(next)
@@ -65,7 +92,7 @@ def logout():
 
 @app.route("/logout_callback")
 def logout_callback():
-    session.pop("netID", None)
+    session.clear()
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
