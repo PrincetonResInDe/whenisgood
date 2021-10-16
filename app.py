@@ -30,33 +30,45 @@ def index():
         return redirect(url_for("login"))
     db_cursor.callproc("getEvents", (session["netID"],))
     for result in db_cursor.stored_results():
-        for column in result.description:
-            print(column[0])
-        for row in result.fetchall():
-            print(row)
-    return "render template for events list here"
+        events = result
+        #print(type(result.description))
+        #print(type(result.fetchall()))
+        #for column in result.description:
+        #    print(column[0])
+        #for row in result.fetchall():
+        #    print(row)
+    return render_template("index.html", name=session["name"], events=events)
 
-@app.route("/event")
-def event():
-    session["eventID"] = request.args.get("id")
+@app.route("/event/<uuid>")
+def event(uuid):
+    session["eventUUID"] = request.view_args["uuid"]
     if "netID" not in session:
         return redirect(url_for("login"))
-    eventID = session.pop("eventID", None)
+    eventID = session.pop("eventUUID", None)
     if not eventID:
         return redirect(url_for("index"))
-    return "eventID: {}".format(eventID)
+    return "eventUUID: {}".format(eventID)
 
-@app.route("/create") # methods = ["GET", "POST"]
+@app.route("/create", methods = ["GET", "POST"])
 def create():
     if "netID" not in session:
         return redirect(url_for("login"))
-    # db_cursor.callproc("addEvent", ...)
-    return "event creation page"
+    if request.method == "POST":
+        name = request.form.get("name")
+        description = request.form.get("description")
+        startDate = request.form.get("startDate")
+        endDate = request.form.get("endDate")
+        db_cursor.callproc("addEvent", (session["netID"], name, 
+                description, startDate, endDate))
+        db.commit()
+        return redirect(url_for("index"))
+    return render_template("create.html")
 
 @app.route("/results")
 def results():
     if "netID" not in session:
         return redirect(url_for("login"))
+    return "results"
 
 @app.route("/api")
 def api():

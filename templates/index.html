@@ -4,7 +4,17 @@
         <title>WhenIsGood</title>
     </head>
     <body>
-        <h1>WhenIsGood, but better!</h1>
-        <h3><a href="/login">Login with CAS</a></h3>
+        <h1>My Events</h1>
+        <h3>Logged in as {{name}}.
+            <a href="/logout">Log out</a>
+        </h3>
+        <h3>
+            <a href="/create">Create new event</a>
+        </h3>
+        {% if events %}
+            {% for value in events %}
+                <p>{{value}}</p>
+            {% endfor %}
+        {% endif %}
     </body>
 </html>
