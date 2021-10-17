@@ -16,6 +16,9 @@ cas_client = CASClient(
     server_url = os.environ.get("CAS_SERVER_URL")
 )
 
+# TODO
+# reinstate connection with every proc call
+# otherwise connection gets dropped periodically
 db = mysql.connector.connect(
 	host=os.environ.get("DB_HOST"),
     database=os.environ.get("DB_NAME"),
@@ -39,15 +42,19 @@ def index():
         #    print(row)
     return render_template("index.html", name=session["name"], events=events)
 
-@app.route("/event/<uuid>")
+@app.route("/event/<uuid>", methods = ["GET", "POST"])
 def event(uuid):
     session["eventUUID"] = request.view_args["uuid"]
     if "netID" not in session:
         return redirect(url_for("login"))
-    eventID = session.pop("eventUUID", None)
-    if not eventID:
+    eventUUID = session.pop("eventUUID", None)
+    if not eventUUID:
         return redirect(url_for("index"))
-    return "eventUUID: {}".format(eventID)
+    if request.method == "POST":
+        # remove this .format
+        return redirect("/event/{}".format(eventUUID))
+    return render_template("respond.html", eventUUID=eventUUID)
+
 
 @app.route("/create", methods = ["GET", "POST"])
 def create():
@@ -92,8 +99,9 @@ def login():
     session["name"] = attributes["displayname"]
     db_cursor.callproc("login", (session["netID"], session["name"]))
     db.commit()
-    if "eventID" in session:
-        return redirect(url_for("event", id=session["eventID"]))
+    if "eventUUID" in session:
+        # is .format bad?
+        return redirect("/event/{}".format(session["eventUUID"]))
     return redirect(next)
 
 @app.route("/logout")
@@ -105,7 +113,7 @@ def logout():
 @app.route("/logout_callback")
 def logout_callback():
     session.clear()
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run()

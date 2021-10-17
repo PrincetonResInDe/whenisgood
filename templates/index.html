@@ -11,9 +11,16 @@
         <h3>
             <a href="/create">Create new event</a>
         </h3>
+        <br />
         {% if events %}
-            {% for value in events %}
-                <p>{{value}}</p>
+            {% for event in events %}
+                <h4>{{event[0]}}</h4>
+                <p>{{event[3]}} - {{event[4]}}</p>
+                <p>{{event[1]}}</p>
+                <p>
+                    <a href="/event/{{event[5]}}">Event Link</a>
+                </p>
+                <br />
             {% endfor %}
         {% endif %}
     </body>
