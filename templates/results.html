@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WhenIsGood</title>
+    </head>
+    <body>
+        <h1>Results</h1>
+        {% if avails %}
+            {% for avail in avails %}
+                <p>{{avail[0]}}: {{avail[1]}} - {{avail[2]}}</p>
+            {% endfor %}
+        {% endif %}
+    </body>
+</html>

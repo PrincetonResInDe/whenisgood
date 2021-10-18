@@ -1,3 +1,4 @@
+from api import call_proc
 from apiclient.discovery import build
 from cas import CASClient
 import datetime
@@ -5,7 +6,6 @@ from flask import Flask, redirect, render_template, request, session, url_for
 import json
 from oauth2client import client
 import os
-import mysql.connector
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("APP_SECRET_KEY")
@@ -16,24 +16,11 @@ cas_client = CASClient(
     server_url = os.environ.get("CAS_SERVER_URL")
 )
 
-# TODO
-# reinstate connection with every proc call
-# otherwise connection gets dropped periodically
-db = mysql.connector.connect(
-	host=os.environ.get("DB_HOST"),
-    database=os.environ.get("DB_NAME"),
-    user=os.environ.get("DB_USER"),
-    password=os.environ.get("DB_PASSWORD")
-)
-db_cursor = db.cursor()
-
 @app.route("/")
 def index():
     if "netID" not in session:
         return redirect(url_for("login"))
-    db_cursor.callproc("getEvents", (session["netID"],))
-    for result in db_cursor.stored_results():
-        events = result
+    events = call_proc("getEvents", (session["netID"],))
         #print(type(result.description))
         #print(type(result.fetchall()))
         #for column in result.description:
@@ -53,16 +40,14 @@ def event(uuid):
     if request.method == "POST":
         startTime = request.form.get("startTime")
         endTime = request.form.get("endTime")
-        db_cursor.callproc("addAvailability", (session["netID"], eventUUID, startTime, endTime))
-        db_cursor.commit()
+        call_proc("addAvailability", (session["netID"], eventUUID,
+                startTime, endTime))
         # remove this .format
-        return redirect("/event/{}".format(eventUUID))
-    db_cursor.callproc("getAvailabilitiesByNetIDAndEvent", 
+        return redirect("/events/{}".format(eventUUID))
+    avails = call_proc("getAvailabilitiesByNetIDAndEvent", 
             (session["netID"], eventUUID))
-    for result in db_cursor.stored_results():
-        availabilities = result
     return render_template("respond.html", eventUUID=eventUUID,
-            availabilities=availabilities)
+            avails=avails)
 
 
 @app.route("/create", methods = ["GET", "POST"])
@@ -74,14 +59,13 @@ def create():
         description = request.form.get("description")
         startDate = request.form.get("startDate")
         endDate = request.form.get("endDate")
-        db_cursor.callproc("addEvent", (session["netID"], name, 
+        call_proc("addEvent", (session["netID"], name, 
                 description, startDate, endDate))
-        db.commit()
         return redirect(url_for("index"))
     return render_template("create.html")
 
 @app.route("/results/<uuid>")
-def results():
+def results(uuid):
     session["resultUUID"] = request.view_args["uuid"]
     if "netID" not in session:
         return redirect(url_for("login"))
@@ -89,8 +73,9 @@ def results():
     resultUUID = session.pop("resultUUID", None)
     if not resultUUID:
         return redirect(url_for("index"))
-    db_cursor.callproc("getAvailabilitiesByEvent", (eventUUID,))
-    return "results"
+    print(resultUUID)
+    avails = call_proc("getAvailabilitiesByEvent", (resultUUID,))
+    return render_template("results.html", avails=avails)
 
 @app.route("/api")
 def api():
@@ -112,7 +97,7 @@ def login():
         return "Failed to verify ticket."
     session["netID"] = user
     session["name"] = attributes["displayname"]
-    db_cursor.callproc("login", (session["netID"], session["name"]))
+    call_proc("login", (session["netID"], session["name"]))
     db.commit()
     if "eventUUID" in session:
         # is .format bad?

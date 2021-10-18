@@ -13,9 +13,9 @@
             <p><input type="submit" value="Submit" /></p>
         </form>
         <br />
-        {% if availabilities %}
-            {% for availabilitiy in availabilities %}
-                <p>{{availability}}</p>
+        {% if avails %}
+            {% for avail in avails %}
+                <p>{{avail[0]}} - {{avail[1]}}</p>
             {% endfor %}
         {% endif %}
     </body>
