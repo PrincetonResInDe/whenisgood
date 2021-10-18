@@ -5,12 +5,18 @@
     </head>
     <body>
         <h1>Set Availability</h1>
-        <form action="/event/{{eventUUID}}" method="POST">
+        <form action="/events/{{eventUUID}}" method="POST">
             <p>Start Time:</p>
-            <p><input type="text" name="startDate" /></p>
+            <p><input type="text" name="startTime" /></p>
             <p>End Time:</p>
-            <p><input type="text" name="endDate" /></p>
+            <p><input type="text" name="endTime" /></p>
             <p><input type="submit" value="Submit" /></p>
         </form>
+        <br />
+        {% if availabilities %}
+            {% for availabilitiy in availabilities %}
+                <p>{{availability}}</p>
+            {% endfor %}
+        {% endif %}
     </body>
 </html>

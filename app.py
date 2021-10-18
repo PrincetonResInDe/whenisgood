@@ -42,7 +42,7 @@ def index():
         #    print(row)
     return render_template("index.html", name=session["name"], events=events)
 
-@app.route("/event/<uuid>", methods = ["GET", "POST"])
+@app.route("/events/<uuid>", methods = ["GET", "POST"])
 def event(uuid):
     session["eventUUID"] = request.view_args["uuid"]
     if "netID" not in session:
@@ -51,9 +51,18 @@ def event(uuid):
     if not eventUUID:
         return redirect(url_for("index"))
     if request.method == "POST":
+        startTime = request.form.get("startTime")
+        endTime = request.form.get("endTime")
+        db_cursor.callproc("addAvailability", (session["netID"], eventUUID, startTime, endTime))
+        db_cursor.commit()
         # remove this .format
         return redirect("/event/{}".format(eventUUID))
-    return render_template("respond.html", eventUUID=eventUUID)
+    db_cursor.callproc("getAvailabilitiesByNetIDAndEvent", 
+            (session["netID"], eventUUID))
+    for result in db_cursor.stored_results():
+        availabilities = result
+    return render_template("respond.html", eventUUID=eventUUID,
+            availabilities=availabilities)
 
 
 @app.route("/create", methods = ["GET", "POST"])
@@ -71,10 +80,16 @@ def create():
         return redirect(url_for("index"))
     return render_template("create.html")
 
-@app.route("/results")
+@app.route("/results/<uuid>")
 def results():
+    session["resultUUID"] = request.view_args["uuid"]
     if "netID" not in session:
         return redirect(url_for("login"))
+    # if netID is not that of owner of event deny access!!!
+    resultUUID = session.pop("resultUUID", None)
+    if not resultUUID:
+        return redirect(url_for("index"))
+    db_cursor.callproc("getAvailabilitiesByEvent", (eventUUID,))
     return "results"
 
 @app.route("/api")
@@ -101,7 +116,9 @@ def login():
     db.commit()
     if "eventUUID" in session:
         # is .format bad?
-        return redirect("/event/{}".format(session["eventUUID"]))
+        return redirect("/events/{}".format(session["eventUUID"]))
+    elif "resultUUID" in session:
+        return redirect("/results/{}".format(session["resultUUID"]))
     return redirect(next)
 
 @app.route("/logout")
