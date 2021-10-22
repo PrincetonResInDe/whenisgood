@@ -14,5 +14,6 @@ def call_proc(name, args=()):
     result = None
     for output in cursor.stored_results():
         result = output
+        break
     return result
 

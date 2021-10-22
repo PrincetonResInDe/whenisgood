@@ -42,10 +42,8 @@ def event(uuid):
         endTime = request.form.get("endTime")
         call_proc("addAvailability", (session["netID"], eventUUID,
                 startTime, endTime))
-        # remove this .format
         return redirect("/events/{}".format(eventUUID))
-    avails = call_proc("getAvailabilitiesByNetIDAndEvent", 
-            (session["netID"], eventUUID))
+    avails = call_proc("getAvailabilities", (eventUUID, session["netID"]))
     return render_template("respond.html", eventUUID=eventUUID,
             avails=avails)
 
@@ -64,17 +62,39 @@ def create():
         return redirect(url_for("index"))
     return render_template("create.html")
 
+@app.route("/edit/<uuid>", methods = ["GET", "POST"])
+def edit(uuid):
+    session["editUUID"] = request.view_args["uuid"]
+    if "netID" not in session:
+        return redirect(url_for("login"))
+    editUUID = session.pop("editUUID", None)
+    if not editUUID:
+        return redirect(url_for("index"))
+    if request.method == "POST":
+        name = request.form.get("name")
+        description = request.form.get("description")
+        startDate = request.form.get("startDate")
+        endDate = request.form.get("endDate")
+        call_proc("editEvent", (editUUID, session["netID"],
+                name, description, startDate, endDate))
+        return redirect(url_for("index"))
+    return render_template("edit.html", editUUID=editUUID)
+
 @app.route("/results/<uuid>")
 def results(uuid):
     session["resultUUID"] = request.view_args["uuid"]
     if "netID" not in session:
         return redirect(url_for("login"))
-    # if netID is not that of owner of event deny access!!!
     resultUUID = session.pop("resultUUID", None)
     if not resultUUID:
         return redirect(url_for("index"))
-    print(resultUUID)
-    avails = call_proc("getAvailabilitiesByEvent", (resultUUID,))
+    owner = None
+    for result in call_proc("getEventOwner", (resultUUID,)):
+        owner = result[0]
+        break
+    if session["netID"] != owner:
+        return redirect(url_for("index"))
+    avails = call_proc("getAvailabilities", (resultUUID, None))
     return render_template("results.html", avails=avails)
 
 @app.route("/api")
@@ -98,12 +118,12 @@ def login():
     session["netID"] = user
     session["name"] = attributes["displayname"]
     call_proc("login", (session["netID"], session["name"]))
-    db.commit()
     if "eventUUID" in session:
-        # is .format bad?
         return redirect("/events/{}".format(session["eventUUID"]))
     elif "resultUUID" in session:
         return redirect("/results/{}".format(session["resultUUID"]))
+    elif "editUUID" in session:
+        return redirect("/edit/{}".format(session["editUUID"]))
     return redirect(next)
 
 @app.route("/logout")
