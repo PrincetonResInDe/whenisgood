@@ -11,9 +11,9 @@ def call_proc(name, args=()):
     cursor = db.cursor()
     cursor.callproc(name, args)
     db.commit()
-    result = None
-    for output in cursor.stored_results():
-        result = output
-        break
-    return result
-
+    result = next(cursor.stored_results())
+    columns = [data[0] for data in result.description]
+    output = []
+    for row in result.fetchall():
+        output.append(dict(zip(columns, row)))
+    return output
