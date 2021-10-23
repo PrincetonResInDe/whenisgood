@@ -11,9 +11,13 @@ def call_proc(name, args=()):
     cursor = db.cursor()
     cursor.callproc(name, args)
     db.commit()
-    result = next(cursor.stored_results())
-    columns = [data[0] for data in result.description]
+    result = None
+    for stored_result in cursor.stored_results():
+        result = stored_result
+        break
     output = []
-    for row in result.fetchall():
-        output.append(dict(zip(columns, row)))
+    if result:
+        columns = [data[0] for data in result.description]
+        for row in result.fetchall():
+            output.append(dict(zip(columns, row)))
     return output

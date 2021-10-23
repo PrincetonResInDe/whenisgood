@@ -1,4 +1,4 @@
-﻿var uri = "http://localhost:5000/api";
+﻿var uri = "/api";
 //var uri = "YApi.aspx";
 function exec_action(method, record) {
     $.ajax({
