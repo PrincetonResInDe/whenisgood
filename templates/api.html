@@ -3,8 +3,8 @@
 <head>
     <script>
         function exec() {
-            input = document.querySelector("#command_line")
-            output = document.querySelector("p")
+            input = document.querySelector("#input");
+            output = document.querySelector("#output");
             fetch("/api", {
                 method: "POST",
                 headers: {
@@ -20,24 +20,38 @@
             })
             .then(data => {
                 if (typeof(data)==="string") {
-                    output.innerHTML = data;
+                    output.value = data;
                     output.setAttribute("style", "color:red");
                 }
                 else {
-                    output.innerHTML = JSON.stringify(data);
+                    output.value = JSON.stringify(data, undefined, 4);
                     output.setAttribute("style", "color:black");
                 }
             });
         }
+        function fillInput(text) {
+            input = document.querySelector("#input");
+            input.value = JSON.stringify(JSON.parse(text), undefined, 4);
+        }
+        const getEvents = '{"sp_name": "getEvents", "params": []}';
+        const addEvent = '{"sp_name": "addEvent", "params": ["new event name", "new event description", "2021-10-25", "2021-10-26"]}';
     </script>
 </head>
 
 <body>
-    <h1>Test Api</h1>
-    <input type="button" value="EXEC" onclick="exec()" />
+    <h1>Test API</h1>
+    
+    <input type="button" value="getEvents" onclick="fillInput(getEvents)" />
+    <input type="button" value="addEvent" onclick="fillInput(addEvent)" />
+    <input type="button" value="Submit" onclick="exec()" />
 
-    Command Line: <input type="text" id="command_line" value='{ "sp_name": "getEvents", "params": [] }' size="150" />
-    <p></p>
+    <br />
+
+    <textarea id="input" rows=16 cols=72></textarea>
+
+    <br />
+
+    <textarea readonly id="output" rows=16 cols=72></textarea>
 
 </body>
 </html>
