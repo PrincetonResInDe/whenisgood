@@ -18,8 +18,8 @@ cas_client = CASClient(
 @app.route("/")
 def index():
     if "netID" not in session:
-        return redirect(url_for("api"))
-    return render_template("test_api.html")
+        return redirect(url_for("login"))
+    return render_template("api.html")
 
 @app.route("/api", methods=["POST"])
 def api():

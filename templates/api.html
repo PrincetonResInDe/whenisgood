@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        function exec() {
+            input = document.querySelector("#command_line")
+            output = document.querySelector("p")
+            fetch("/api", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(JSON.parse(input.value)),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return response.text();
+            })
+            .then(data => {
+                if (typeof(data)==="string") {
+                    output.innerHTML = data;
+                    output.setAttribute("style", "color:red");
+                }
+                else {
+                    output.innerHTML = JSON.stringify(data);
+                    output.setAttribute("style", "color:black");
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Test Api</h1>
+    <input type="button" value="EXEC" onclick="exec()" />
+
+    Command Line: <input type="text" id="command_line" value='{ "sp_name": "getEvents", "params": [] }' size="150" />
+    <p></p>
+
+</body>
+</html>
