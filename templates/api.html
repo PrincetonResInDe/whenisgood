@@ -10,7 +10,7 @@
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(JSON.parse(input.value)),
+                body: input.value,
             })
             .then(response => {
                 if (response.ok) {
@@ -35,6 +35,11 @@
         }
         const getEvents = '{"sp_name": "getEvents", "params": []}';
         const addEvent = '{"sp_name": "addEvent", "params": ["new event name", "new event description", "2021-10-25", "2021-10-26"]}';
+        const editEvent = '{"sp_name": "editEvent", "params": ["INSERT-EVENT-UUID-HERE", "edited event name", "edited event description", "2021-11-25", "2021-11-26"]}';
+        const deleteEvent = '{"sp_name": "deleteEvent", "params": ["INSERT-EVENT-UUID-HERE"]}';
+        const getAvailabilities = '{"sp_name": "getAvailabilities", "params": ["INSERT-EVENT-UUID-HERE"]}';
+        const addAvailability = '{"sp_name": "addAvailability", "params": ["INSERT-EVENT-UUID-HERE", "2021-10-25 11:00:00", "2021-10-25 12:00:00"]}'
+        const deleteAvailabilities = '{"sp_name": "deleteAvailabilities", "params": ["INSERT-EVENT-UUID-HERE"]}'
     </script>
 </head>
 
@@ -43,15 +48,20 @@
     
     <input type="button" value="getEvents" onclick="fillInput(getEvents)" />
     <input type="button" value="addEvent" onclick="fillInput(addEvent)" />
-    <input type="button" value="Submit" onclick="exec()" />
+    <input type="button" value="editEvent" onclick="fillInput(editEvent)" />
+    <input type="button" value="deleteEvent" onclick="fillInput(deleteEvent)" />
+    <input type="button" value="getAvailabilities" onclick="fillInput(getAvailabilities)" />
+    <input type="button" value="addAvailability" onclick="fillInput(addAvailability)" />
+    <input type="button" value="deleteAvailabilities" onclick="fillInput(deleteAvailabilities)" />
+    <input type="button" style="background-color: #4CAF50" value="Submit" onclick="exec()" />
 
     <br />
 
-    <textarea id="input" rows=16 cols=72></textarea>
+    <textarea id="input" rows=16 cols=96></textarea>
 
     <br />
 
-    <textarea readonly id="output" rows=16 cols=72></textarea>
+    <textarea readonly id="output" rows=32 cols=96></textarea>
 
 </body>
 </html>
