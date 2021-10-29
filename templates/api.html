@@ -19,6 +19,8 @@
                 return response.text();
             })
             .then(data => {
+                output.value = JSON.stringify(data, undefined, 4);
+                /*
                 if (typeof(data)==="string") {
                     output.value = data;
                     output.setAttribute("style", "color:red");
@@ -27,6 +29,7 @@
                     output.value = JSON.stringify(data, undefined, 4);
                     output.setAttribute("style", "color:black");
                 }
+                */
             });
         }
         function fillInput(text) {
