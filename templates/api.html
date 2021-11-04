@@ -20,16 +20,6 @@
             })
             .then(data => {
                 output.value = JSON.stringify(data, undefined, 4);
-                /*
-                if (typeof(data)==="string") {
-                    output.value = data;
-                    output.setAttribute("style", "color:red");
-                }
-                else {
-                    output.value = JSON.stringify(data, undefined, 4);
-                    output.setAttribute("style", "color:black");
-                }
-                */
             });
         }
         function fillInput(text) {
@@ -37,8 +27,8 @@
             input.value = JSON.stringify(JSON.parse(text), undefined, 4);
         }
         const getEvents = '{"sp_name": "getEvents", "params": []}';
-        const addEvent = '{"sp_name": "addEvent", "params": ["new event name", "new event description", "2021-10-25", "2021-10-26"]}';
-        const editEvent = '{"sp_name": "editEvent", "params": ["INSERT-EVENT-UUID-HERE", "edited event name", "edited event description", "2021-11-25", "2021-11-26"]}';
+        const addEvent = '{"sp_name": "addEvent", "params": ["new event name", "new event description", "2021-10-25", "2021-10-26", 0]}';
+        const editEvent = '{"sp_name": "editEvent", "params": ["INSERT-EVENT-UUID-HERE", "edited event name", "edited event description", "2021-11-25", "2021-11-26", 1]}';
         const deleteEvent = '{"sp_name": "deleteEvent", "params": ["INSERT-EVENT-UUID-HERE"]}';
         const getAvailabilities = '{"sp_name": "getAvailabilities", "params": ["INSERT-EVENT-UUID-HERE"]}';
         const addAvailability = '{"sp_name": "addAvailability", "params": ["INSERT-EVENT-UUID-HERE", "2021-10-25 11:00:00", "2021-10-25 12:00:00"]}'
