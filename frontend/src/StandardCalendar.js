@@ -8,29 +8,9 @@ export default class StandardCalendar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loaded: false,
       lastUid: 0,
-      selectedIntervals: [
-        /*
-        {
-          uid: 1,
-          start: moment({h: 10, m: 5}),
-          end: moment({h: 12, m: 5}),
-          value: "Booked by Smith"
-        },
-        {
-          uid: 2,
-          start: moment({h: 13, m: 0}).add(2,'d'),
-          end: moment({h: 13, m: 45}).add(2,'d'),
-          value: "Closed"
-        },
-        {
-          uid: 3,
-          start: moment({h: 11, m: 0}),
-          end: moment({h: 14, m: 0}),
-          value: "Reserved by White"
-        },
-        */
-      ]
+      selectedIntervals: []
     }
     this.updateAvailabilities = this.updateAvailabilities.bind(this)
   }
@@ -45,7 +25,7 @@ export default class StandardCalendar extends React.Component {
       headers: {
           "Content-Type": "application/json",
       },
-      body: JSON.stringify(request), // '{"sp_name": "getAvailabilities", "params": ["' + this.props.eventUUID + '"]}'
+      body: JSON.stringify(request),
       })
       .then(response => response.json())
       .then(avails => {
@@ -69,6 +49,7 @@ export default class StandardCalendar extends React.Component {
             console.log(avail.end.clone().utc().format("YYYY-M-D HH:mm:ss"));
             console.log("-------");
           });
+          this.setState({loaded: true});
       });
   }
   
@@ -139,11 +120,17 @@ export default class StandardCalendar extends React.Component {
   }
 
   render() {
+    if (!this.state.loaded) {
+      return <div></div>
+    }
     return <div><WeekCalendar
-      startTime = {moment({h: 16, m: 0})} // bug where events aren't being shown until you scroll the calendar
+      startTime = {moment({h: 16, m: 15})}
       endTime = {moment({h: 22, m: 15})}
       firstDay = {moment("2021-11-22")}
-      numberOfDays= {5}
+      numberOfDays = {7}
+      scaleFormat = {"HH:mm"}
+      dayFormat = {"ddd. MM.DD"}
+      //showModalCase = {["edit", "delete"]}
       selectedIntervals = {this.state.selectedIntervals}
       onIntervalSelect = {this.handleSelect}
       onIntervalUpdate = {this.handleEventUpdate}
