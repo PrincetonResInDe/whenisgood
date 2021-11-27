@@ -1,5 +1,5 @@
 import React from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import WeekCalendar from 'react-week-calendar';
 import 'react-week-calendar/dist/style.css';
 
@@ -32,6 +32,7 @@ export default class StandardCalendar extends React.Component {
         */
       ]
     }
+    this.updateAvailabilities = this.updateAvailabilities.bind(this)
   }
 
   componentDidMount() {
@@ -48,22 +49,29 @@ export default class StandardCalendar extends React.Component {
       })
       .then(response => response.json())
       .then(avails => {
-        console.log(avails);
         avails.forEach(avail => {
+          console.log(avail.startTime);
           this.state.selectedIntervals.push(
             {
               uid: this.state.lastUid,
-              start: moment(avail.startTime).add(5,'h'),
-              end: moment(avail.endTime).add(5,'h'),
-              value: avail.name
+              start: moment(avail.startTime),
+              end: moment(avail.endTime),
+              value: ""
             }
           )
           this.state.lastUid++;
         });
+      })
+      .then(data => {
+          console.log(this.state.selectedIntervals);
+          this.state.selectedIntervals.forEach(avail => {
+            console.log(avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"));
+            console.log(avail.end.clone().utc().format("YYYY-M-D HH:mm:ss"));
+            console.log("-------");
+          });
       });
-      console.log(this.state);
   }
-
+  
   updateAvailabilities() {
     const request = {
       sp_name: "deleteAvailabilities",
@@ -82,8 +90,8 @@ export default class StandardCalendar extends React.Component {
         sp_name: "addAvailability",
         params: [
                   this.props.eventUUID, 
-                  avail.start.format("YYYY-M-D h:mm:ss"), 
-                  avail.end.format("YYYY-M-D h:mm:ss") 
+                  avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"), 
+                  avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
                 ]
       };
       fetch("http://localhost:5000/api", {
@@ -103,7 +111,6 @@ export default class StandardCalendar extends React.Component {
       selectedIntervals.splice(index, 1);
       this.setState({selectedIntervals});
     }
-    this.updateAvailabilities();
   }
 
   handleEventUpdate = (event) => {
@@ -113,7 +120,6 @@ export default class StandardCalendar extends React.Component {
       selectedIntervals[index] = event;
       this.setState({selectedIntervals});
     }
-    this.updateAvailabilities();
   }
 
   handleSelect = (newIntervals) => {
@@ -130,19 +136,21 @@ export default class StandardCalendar extends React.Component {
       selectedIntervals: selectedIntervals.concat(intervals),
       lastUid: lastUid + newIntervals.length
     });
-
-    this.updateAvailabilities();
   }
 
   render() {
-    return <WeekCalendar
+    return <div><WeekCalendar
       startTime = {moment({h: 16, m: 0})} // bug where events aren't being shown until you scroll the calendar
       endTime = {moment({h: 22, m: 15})}
-      numberOfDays= {7}
+      firstDay = {moment("2021-11-22")}
+      numberOfDays= {5}
       selectedIntervals = {this.state.selectedIntervals}
       onIntervalSelect = {this.handleSelect}
       onIntervalUpdate = {this.handleEventUpdate}
       onIntervalRemove = {this.handleEventRemove}
+      eventSpacing = {0}
     />
+    <button onClick={this.updateAvailabilities}>Save</button>
+    </div>
   }
 }
