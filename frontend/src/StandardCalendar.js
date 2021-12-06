@@ -70,21 +70,23 @@ export default class StandardCalendar extends React.Component {
     });
 
     this.state.selectedIntervals.forEach(avail => {
-      const request = {
-        sp_name: "addAvailability",
-        params: [
-                  this.props.eventUUID, 
-                  avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"), 
-                  avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
-                ]
-      };
-      fetch("/api", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
-      });
+      if (avail.type == "event") {
+        const request = {
+          sp_name: "addAvailability",
+          params: [
+                    this.props.eventUUID, 
+                    avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"), 
+                    avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
+                  ]
+        };
+        fetch("/api", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(request),
+        });
+      }
     });
   }
 
