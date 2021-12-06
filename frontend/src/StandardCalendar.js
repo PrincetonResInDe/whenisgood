@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment-timezone';
-import WeekCalendar from 'react-week-calendar';
-import 'react-week-calendar/dist/style.css';
+import WeekCalendar from './WeekCalendar/WeekCalendar';
 
 export default class StandardCalendar extends React.Component {
 
@@ -13,14 +12,16 @@ export default class StandardCalendar extends React.Component {
       selectedIntervals: []
     }
     this.updateAvailabilities = this.updateAvailabilities.bind(this)
+    this.loadGoogleCalendar = this.loadGoogleCalendar.bind(this)
   }
 
   componentDidMount() {
+    this.setState({loaded: false});
     const request = {
       sp_name: "getAvailabilities",
       params: [this.props.eventUUID]
     }
-    fetch("http://localhost:5000/api", {
+    fetch("/api", {
       method: "POST",
       headers: {
           "Content-Type": "application/json",
@@ -36,7 +37,8 @@ export default class StandardCalendar extends React.Component {
               uid: this.state.lastUid,
               start: moment(avail.startTime),
               end: moment(avail.endTime),
-              value: ""
+              value: "",
+              type: "event"
             }
           )
           this.state.lastUid++;
@@ -51,6 +53,7 @@ export default class StandardCalendar extends React.Component {
           });
           this.setState({loaded: true});
       });
+
   }
   
   updateAvailabilities() {
@@ -58,7 +61,7 @@ export default class StandardCalendar extends React.Component {
       sp_name: "deleteAvailabilities",
       params: [this.props.eventUUID]
     };
-    fetch("http://localhost:5000/api", {
+    fetch("/api", {
       method: "POST",
       headers: {
           "Content-Type": "application/json",
@@ -75,7 +78,7 @@ export default class StandardCalendar extends React.Component {
                   avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
                 ]
       };
-      fetch("http://localhost:5000/api", {
+      fetch("/api", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -83,6 +86,38 @@ export default class StandardCalendar extends React.Component {
         body: JSON.stringify(request),
       });
     });
+  }
+
+  loadGoogleCalendar() {
+    this.setState({loaded: false});
+    const request = {
+      timeMin: "2021-11-22",
+      timeMax: "2021-11-29"
+    }
+    fetch("http://localhost:5000/importgcal", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+      })
+      .then(response => response.json())
+      .then(events => {
+        events.forEach(event => {
+          console.log(event.start.dateTime);
+          this.state.selectedIntervals.push(
+            {
+              uid: this.state.lastUid,
+              start: moment(event.start.dateTime),
+              end: moment(event.end.dateTime),
+              value: event.summary,
+              type: "gcalevent"
+            }
+          )
+          this.state.lastUid++;
+        });
+      });
+      this.setState({loaded: true});
   }
 
   handleEventRemove = (event) => {
@@ -124,19 +159,21 @@ export default class StandardCalendar extends React.Component {
       return <div></div>
     }
     return <div><WeekCalendar
-      startTime = {moment({h: 16, m: 15})}
+      startTime = {moment({h: 7, m: 15})}
       endTime = {moment({h: 22, m: 15})}
       firstDay = {moment("2021-11-22")}
       numberOfDays = {7}
       scaleFormat = {"HH:mm"}
       dayFormat = {"ddd. MM.DD"}
       //showModalCase = {["edit", "delete"]}
+      useModal = {false}
       selectedIntervals = {this.state.selectedIntervals}
       onIntervalSelect = {this.handleSelect}
       onIntervalUpdate = {this.handleEventUpdate}
       onIntervalRemove = {this.handleEventRemove}
       eventSpacing = {0}
     />
+    <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
     <button onClick={this.updateAvailabilities}>Save</button>
     </div>
   }
