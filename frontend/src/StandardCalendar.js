@@ -55,7 +55,7 @@ export default class StandardCalendar extends React.Component {
       });
 
   }
-  
+
   updateAvailabilities() {
     const request = {
       sp_name: "deleteAvailabilities",
@@ -91,6 +91,8 @@ export default class StandardCalendar extends React.Component {
   }
 
   loadGoogleCalendar() {
+    console.log("STATE");
+    console.log(this.state.selectedIntervals);
     this.setState({loaded: false});
     const request = {
       timeMin: "2021-11-22",
@@ -119,7 +121,8 @@ export default class StandardCalendar extends React.Component {
           this.state.lastUid++;
         });
       });
-      this.setState({loaded: true});
+      this.setState({loaded: true}); // need seperate bool for if gcal is already loaded
+      // or maybe remove all gcal events
   }
 
   handleEventRemove = (event) => {

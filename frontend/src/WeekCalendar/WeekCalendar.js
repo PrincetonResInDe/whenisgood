@@ -198,9 +198,9 @@ var WeekCalendar = function (_React$Component) {
           });
 
           // merge overlapping availability intervals
-          var newIntervals = []
+          var newIntervals = [];
           var topInterval = null;
-          intervals.forEach(function (interval, index, array) {
+          intervals.forEach(function (interval) {
             if (interval.type == "event") {
               if (topInterval == null) {
                 topInterval = interval;
@@ -219,7 +219,9 @@ var WeekCalendar = function (_React$Component) {
               newIntervals.push(interval);
             }
           });
-          newIntervals.push(topInterval);
+          if (topInterval != null) {
+            newIntervals.push(topInterval);
+          }
           intervals = newIntervals;
 
           intervals.forEach(function (interval, index, array) {
@@ -235,6 +237,7 @@ var WeekCalendar = function (_React$Component) {
             var beforeIntersectionNumber = array.filter(function (i, i1) {
               return i1 < index && interval.type == "gcalevent" && interval.start.isBefore(i.end); // interval.type == "gcalevent" && 
             }).length;
+
             var afterIntersectionNumber = array.filter(function (i, i1) {
               return i1 > index && interval.type == "gcalevent" && interval.end.isAfter(i.start);
             }).length;
