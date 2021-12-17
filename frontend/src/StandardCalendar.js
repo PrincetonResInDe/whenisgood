@@ -146,6 +146,7 @@ export default class StandardCalendar extends React.Component {
 
       return {
         ...interval,
+        type: "event",
         uid: lastUid + index
       }
     });

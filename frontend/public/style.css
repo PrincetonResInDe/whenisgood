@@ -79,7 +79,7 @@
 }
 
 .weekCalendar__overlay {
-	position: absolute
+	position: absolute;
 }
 
 .weekCalendar__overlay_status_selection {
@@ -142,7 +142,7 @@
 	width: 100%;
 	height: 100%;
 	color: #6b6b6b;
-	background-color: rgba(195, 195, 195, .4)
+	background-color: rgba(195, 195, 195, .4);
 }
 
 .calendarModal {

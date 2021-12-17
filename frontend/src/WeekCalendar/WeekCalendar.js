@@ -197,6 +197,31 @@ var WeekCalendar = function (_React$Component) {
             return i1.start.diff(i2.start, 'minutes');
           });
 
+          // merge overlapping availability intervals
+          var newIntervals = []
+          var topInterval = null;
+          intervals.forEach(function (interval, index, array) {
+            if (interval.type == "event") {
+              if (topInterval == null) {
+                topInterval = interval;
+              }
+              else {
+                if (topInterval.end.isBefore(interval.start)) {
+                  newIntervals.push(topInterval);
+                  topInterval = interval;
+                }
+                else if (topInterval.end.isBefore(interval.end)) {
+                  topInterval.end = interval.end;
+                }
+              }
+            }
+            else {
+              newIntervals.push(interval);
+            }
+          });
+          newIntervals.push(topInterval);
+          intervals = newIntervals;
+
           intervals.forEach(function (interval, index, array) {
             var startY = 0;
             if (!interval.start.isBefore(day)) {
