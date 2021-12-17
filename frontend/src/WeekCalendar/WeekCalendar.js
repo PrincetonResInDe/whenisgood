@@ -208,10 +208,10 @@ var WeekCalendar = function (_React$Component) {
             }
 
             var beforeIntersectionNumber = array.filter(function (i, i1) {
-              return i1 < index && interval.start.isBefore(i.end);
+              return i1 < index && interval.type == "gcalevent" && interval.start.isBefore(i.end); // interval.type == "gcalevent" && 
             }).length;
             var afterIntersectionNumber = array.filter(function (i, i1) {
-              return i1 > index && interval.end.isAfter(i.start);
+              return i1 > index && interval.type == "gcalevent" && interval.end.isAfter(i.start);
             }).length;
             var groupIntersection = beforeIntersectionNumber + afterIntersectionNumber + 1;
 
@@ -221,16 +221,28 @@ var WeekCalendar = function (_React$Component) {
             }
             var top = startY * cellHeight;
             var width;
+            var left;
 
             if (interval.type == "event") {
               width = (columnDimensions[dayIndex].width - eventSpacing)
+              //left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection));
             }
             else {
               width = (columnDimensions[dayIndex].width - eventSpacing) / groupIntersection;
+              //left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * beforeIntersectionNumber;
             }
 
             // TODO: dividing  by the GroupIntersection doesn't seem to work all that great...
-            var left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * beforeIntersectionNumber;
+            // this "left" calculation is causing the bug with dragging one event over another and it appearing in different column
+            /*
+            console.log("columnDimensions[dayIndex].left = " + columnDimensions[dayIndex].left);
+            console.log("width = " + width);
+            console.log("eventSpacing = " + eventSpacing);
+            console.log("groupIntersection = " + groupIntersection);
+            console.log("beforeIntersectionNumber = " + beforeIntersectionNumber);
+            */
+
+            left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * (beforeIntersectionNumber + afterIntersectionNumber);
             var height = (endY - startY) * cellHeight;
             var eventWrapperStyle = {
               top: top,
