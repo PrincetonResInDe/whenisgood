@@ -224,6 +224,10 @@ var WeekCalendar = function (_React$Component) {
           }
           intervals = newIntervals;
 
+          intervals.sort(function (i1, i2) { // another sort is needed because merging doesnt happen in order
+            return i1.start.diff(i2.start, 'minutes'); // make this more efficient later
+          });
+          
           intervals.forEach(function (interval, index, array) {
             var startY = 0;
             if (!interval.start.isBefore(day)) {
@@ -241,7 +245,13 @@ var WeekCalendar = function (_React$Component) {
             var afterIntersectionNumber = array.filter(function (i, i1) {
               return i1 > index && interval.type == "gcalevent" && interval.end.isAfter(i.start);
             }).length;
-            var groupIntersection = beforeIntersectionNumber + afterIntersectionNumber + 1;
+
+            var availabilityOverlap = array.filter(function (i, i1) {
+              return interval.type == "gcalevent" && i.type == "event" && ((i1 < index && interval.start.isBefore(i.end)) || (i1 > index && interval.end.isAfter(i.start))); // interval.type == "gcalevent" && 
+            }).length;
+            console.log(availabilityOverlap);
+            
+            var groupIntersection = beforeIntersectionNumber + afterIntersectionNumber + 1 - Math.max(0, availabilityOverlap-1);
 
             var endY = Utils.getNumberOfCells(interval.end, scaleUnit, true, offsetTop);
             if (endY > scaleIntervals.length) {
@@ -260,17 +270,8 @@ var WeekCalendar = function (_React$Component) {
               //left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * beforeIntersectionNumber;
             }
 
-            // TODO: dividing  by the GroupIntersection doesn't seem to work all that great...
-            // this "left" calculation is causing the bug with dragging one event over another and it appearing in different column
-            /*
-            console.log("columnDimensions[dayIndex].left = " + columnDimensions[dayIndex].left);
-            console.log("width = " + width);
-            console.log("eventSpacing = " + eventSpacing);
-            console.log("groupIntersection = " + groupIntersection);
-            console.log("beforeIntersectionNumber = " + beforeIntersectionNumber);
-            */
-
-            left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * (beforeIntersectionNumber + afterIntersectionNumber);
+            // need to fix this because gcal events keep getting smaller when green selection added
+            left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * (beforeIntersectionNumber + afterIntersectionNumber - Math.max(0, availabilityOverlap-1));
             var height = (endY - startY) * cellHeight;
             var eventWrapperStyle = {
               top: top,
