@@ -164,7 +164,12 @@ export default class StandardCalendar extends React.Component {
   setSelectedIntervals = (intervals) => {
     console.log("BEFORE");
     console.log(this.state.selectedIntervals);
-    this.state.selectedIntervals = intervals;
+    this.state.selectedIntervals.length = 0
+    intervals.forEach(interval => {
+      this.state.selectedIntervals.push(interval);
+    });
+    console.log("INTERVALS");
+    console.log(intervals);
     console.log("AFTER");
     console.log(this.state.selectedIntervals);
     /*

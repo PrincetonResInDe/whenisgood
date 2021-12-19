@@ -203,6 +203,8 @@ var WeekCalendar = function (_React$Component) {
           var newIntervals = [];
           var topInterval = null;
           intervals.forEach(function (interval) {
+            console.log("FOREACH INTERVALS");
+            console.log(intervals);
             if (interval.type == "event") {
               if (topInterval == null) {
                 topInterval = interval;
@@ -302,6 +304,8 @@ var WeekCalendar = function (_React$Component) {
       for (var dayIndex = 0; dayIndex < numberOfDays; dayIndex += 1) {
         _loop(dayIndex);
       }
+      console.log("NEW SELECTED INTERVALS");
+      console.log(newSelectedIntervals);
       _props.setSelectedIntervals(newSelectedIntervals);
       return result;
     }
