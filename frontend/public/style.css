@@ -102,7 +102,7 @@
 }
 
 .calendarBody__cell {
-	background-color: #fff;
+	/*background-color: #fff;*/
 	border-bottom: 1px solid #b7b7b7
 }
 
@@ -118,7 +118,9 @@
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
-	user-select: none
+	user-select: none;
+	position: relative;
+	z-index: 5;
 }
 
 .dayCell:hover {
@@ -133,7 +135,8 @@
 	width: 100%;
 	height: 100%;
 	color: #6b6b6b;
-	background-color: rgba(139, 195, 74, .4)
+	background-color: rgba(139, 195, 74, .4);
+	z-index: 10;
 }
 
 .gcalevent {
@@ -143,6 +146,7 @@
 	height: 100%;
 	color: #6b6b6b;
 	background-color: rgba(195, 195, 195, .4);
+	z-index: -1;
 }
 
 .calendarModal {
