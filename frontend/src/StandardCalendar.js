@@ -18,6 +18,7 @@ export default class StandardCalendar extends React.Component {
 
   componentDidMount() {
     this.setState({loaded: false});
+    this.loadGoogleCalendar();
     const request = {
       sp_name: "getAvailabilities",
       params: [this.props.eventUUID]
@@ -32,7 +33,6 @@ export default class StandardCalendar extends React.Component {
       .then(response => response.json())
       .then(avails => {
         avails.forEach(avail => {
-          console.log(avail.startTime);
           this.state.selectedIntervals.push(
             {
               uid: this.state.lastUid,
@@ -46,12 +46,6 @@ export default class StandardCalendar extends React.Component {
         });
       })
       .then(data => {
-          console.log(this.state.selectedIntervals);
-          this.state.selectedIntervals.forEach(avail => {
-            console.log(avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"));
-            console.log(avail.end.clone().utc().format("YYYY-M-D HH:mm:ss"));
-            console.log("-------");
-          });
           this.setState({loaded: true});
       });
 
@@ -92,9 +86,6 @@ export default class StandardCalendar extends React.Component {
   }
 
   loadGoogleCalendar() {
-    console.log("STATE");
-    console.log(this.state.selectedIntervals);
-    this.setState({loaded: false});
     const request = {
       timeMin: "2021-11-22",
       timeMax: "2021-11-29"
@@ -109,7 +100,6 @@ export default class StandardCalendar extends React.Component {
       .then(response => response.json())
       .then(events => {
         events.forEach(event => {
-          console.log(event.start.dateTime);
           this.state.selectedIntervals.push(
             {
               uid: this.state.lastUid,
@@ -122,8 +112,6 @@ export default class StandardCalendar extends React.Component {
           this.state.lastUid++;
         });
       });
-      this.setState({loaded: true}); // need seperate bool for if gcal is already loaded
-      // or maybe remove all gcal events
   }
 
   handleEventRemove = (event) => {
@@ -162,21 +150,10 @@ export default class StandardCalendar extends React.Component {
   }
 
   setSelectedIntervals = (intervals) => {
-    console.log("BEFORE");
-    console.log(this.state.selectedIntervals);
     this.state.selectedIntervals.length = 0
     intervals.forEach(interval => {
       this.state.selectedIntervals.push(interval);
     });
-    console.log("INTERVALS");
-    console.log(intervals);
-    console.log("AFTER");
-    console.log(this.state.selectedIntervals);
-    /*
-    let uids = intervals.map(({uid})=>uid);
-    this.state.selectedIntervals = this.state.selectedIntervals.filter(event => !uids.includes(event.uid));
-    this.state.selectedIntervals.push.apply(this.state.selectedIntervals, intervals);
-    */
   }
 
   render() {
@@ -197,7 +174,7 @@ export default class StandardCalendar extends React.Component {
       onIntervalUpdate = {this.handleEventUpdate}
       onIntervalRemove = {this.handleEventRemove}
       setSelectedIntervals = {this.setSelectedIntervals}
-      onEventClick = {function(){console.log("clicked on event");}}
+      onEventClick = {this.handleEventRemove} // function(){console.log("clicked on event");}
       eventSpacing = {0}
     />
     <button onClick={this.loadGoogleCalendar}>Load Gcal</button>

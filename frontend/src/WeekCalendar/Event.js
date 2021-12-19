@@ -24,8 +24,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var propTypes = {
   start: _propTypes2.default.object.isRequired,
-  end: _propTypes2.default.object.isRequired,
-  value: _propTypes2.default.string.isRequired
+  end: _propTypes2.default.object.isRequired
 };
 
 var Event = function (_React$PureComponent) {

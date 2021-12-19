@@ -179,8 +179,7 @@ var WeekCalendar = function (_React$Component) {
       var _state = this.state,
           columnDimensions = _state.columnDimensions,
           scaleIntervals = _state.scaleIntervals;
-      console.log("HERE1");
-      console.log(selectedIntervals);
+
       var result = [];
       if (columnDimensions.length === 0 || selectedIntervals.length === 0) {
         return result;
@@ -198,13 +197,11 @@ var WeekCalendar = function (_React$Component) {
           intervals.sort(function (i1, i2) {
             return i1.start.diff(i2.start, 'minutes');
           });
-          // ISSUE: GCAL EVENTS ARE DISAPPEARING SOMEWHERE AFTER LOAD
+
           // merge overlapping availability intervals
           var newIntervals = [];
           var topInterval = null;
           intervals.forEach(function (interval) {
-            console.log("FOREACH INTERVALS");
-            console.log(intervals);
             if (interval.type == "event") {
               if (topInterval == null) {
                 topInterval = interval;
@@ -220,7 +217,6 @@ var WeekCalendar = function (_React$Component) {
               }
             }
             else {
-              console.log("pushed interval with type: " + interval.type);
               newIntervals.push(interval);
             }
           });
@@ -304,8 +300,6 @@ var WeekCalendar = function (_React$Component) {
       for (var dayIndex = 0; dayIndex < numberOfDays; dayIndex += 1) {
         _loop(dayIndex);
       }
-      console.log("NEW SELECTED INTERVALS");
-      console.log(newSelectedIntervals);
       _props.setSelectedIntervals(newSelectedIntervals);
       return result;
     }
