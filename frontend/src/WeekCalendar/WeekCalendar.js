@@ -179,13 +179,15 @@ var WeekCalendar = function (_React$Component) {
       var _state = this.state,
           columnDimensions = _state.columnDimensions,
           scaleIntervals = _state.scaleIntervals;
-
+      console.log("HERE1");
+      console.log(selectedIntervals);
       var result = [];
       if (columnDimensions.length === 0 || selectedIntervals.length === 0) {
         return result;
       }
       var EventComponent = this.props.eventComponent;
       var offsetTop = Utils.getOffset(scaleIntervals[0].start);
+      var newSelectedIntervals = [];
 
       var _loop = function _loop(dayIndex) {
         var day = (0, _moment2.default)(firstDay).startOf('day').add(dayIndex, 'day');
@@ -196,7 +198,7 @@ var WeekCalendar = function (_React$Component) {
           intervals.sort(function (i1, i2) {
             return i1.start.diff(i2.start, 'minutes');
           });
-
+          // ISSUE: GCAL EVENTS ARE DISAPPEARING SOMEWHERE AFTER LOAD
           // merge overlapping availability intervals
           var newIntervals = [];
           var topInterval = null;
@@ -216,6 +218,7 @@ var WeekCalendar = function (_React$Component) {
               }
             }
             else {
+              console.log("pushed interval with type: " + interval.type);
               newIntervals.push(interval);
             }
           });
@@ -227,7 +230,9 @@ var WeekCalendar = function (_React$Component) {
           intervals.sort(function (i1, i2) { // another sort is needed because merging doesnt happen in order
             return i1.start.diff(i2.start, 'minutes'); // make this more efficient later
           });
-          
+
+          newSelectedIntervals.push.apply(newSelectedIntervals, intervals);
+
           intervals.forEach(function (interval, index, array) {
             var startY = 0;
             if (!interval.start.isBefore(day)) {
@@ -249,7 +254,7 @@ var WeekCalendar = function (_React$Component) {
             var availabilityOverlap = array.filter(function (i, i1) {
               return interval.type == "gcalevent" && i.type == "event" && ((i1 < index && interval.start.isBefore(i.end)) || (i1 > index && interval.end.isAfter(i.start))); // interval.type == "gcalevent" && 
             }).length;
-            console.log(availabilityOverlap);
+            //console.log(availabilityOverlap);
             
             var groupIntersection = beforeIntersectionNumber + afterIntersectionNumber + 1 - Math.max(0, availabilityOverlap-1);
 
@@ -297,6 +302,7 @@ var WeekCalendar = function (_React$Component) {
       for (var dayIndex = 0; dayIndex < numberOfDays; dayIndex += 1) {
         _loop(dayIndex);
       }
+      _props.setSelectedIntervals(newSelectedIntervals);
       return result;
     }
   }, {

@@ -13,6 +13,7 @@ export default class StandardCalendar extends React.Component {
     }
     this.updateAvailabilities = this.updateAvailabilities.bind(this)
     this.loadGoogleCalendar = this.loadGoogleCalendar.bind(this)
+    this.setSelectedIntervals = this.setSelectedIntervals.bind(this)
   }
 
   componentDidMount() {
@@ -160,6 +161,19 @@ export default class StandardCalendar extends React.Component {
     });
   }
 
+  setSelectedIntervals = (intervals) => {
+    console.log("BEFORE");
+    console.log(this.state.selectedIntervals);
+    this.state.selectedIntervals = intervals;
+    console.log("AFTER");
+    console.log(this.state.selectedIntervals);
+    /*
+    let uids = intervals.map(({uid})=>uid);
+    this.state.selectedIntervals = this.state.selectedIntervals.filter(event => !uids.includes(event.uid));
+    this.state.selectedIntervals.push.apply(this.state.selectedIntervals, intervals);
+    */
+  }
+
   render() {
     if (!this.state.loaded) {
       return <div></div>
@@ -177,6 +191,8 @@ export default class StandardCalendar extends React.Component {
       onIntervalSelect = {this.handleSelect}
       onIntervalUpdate = {this.handleEventUpdate}
       onIntervalRemove = {this.handleEventRemove}
+      setSelectedIntervals = {this.setSelectedIntervals}
+      onEventClick = {function(){console.log("clicked on event");}}
       eventSpacing = {0}
     />
     <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
