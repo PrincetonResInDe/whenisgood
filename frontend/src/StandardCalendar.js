@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment-timezone';
 import WeekCalendar from './WeekCalendar/WeekCalendar';
+import { handleClientLoad, handleAuthClick } from './gcal';
 
 export default class StandardCalendar extends React.Component {
 
@@ -9,7 +10,11 @@ export default class StandardCalendar extends React.Component {
     this.state = {
       loaded: false,
       lastUid: 0,
-      selectedIntervals: []
+      selectedIntervals: [],
+      eventData: { // take from props
+        'timeMin': "2021-11-22T00:00:00.000Z",
+        'timeMax': "2021-11-29T00:00:00.000Z"
+      }
     }
     this.updateAvailabilities = this.updateAvailabilities.bind(this)
     this.loadGoogleCalendar = this.loadGoogleCalendar.bind(this)
@@ -18,7 +23,7 @@ export default class StandardCalendar extends React.Component {
 
   componentDidMount() {
     this.setState({loaded: false});
-    this.loadGoogleCalendar();
+    //this.loadGoogleCalendar();
     const request = {
       sp_name: "getAvailabilities",
       params: [this.props.eventUUID]
@@ -46,9 +51,9 @@ export default class StandardCalendar extends React.Component {
         });
       })
       .then(data => {
+          handleClientLoad(this.state);
           this.setState({loaded: true});
       });
-
   }
 
   updateAvailabilities() {
@@ -175,9 +180,9 @@ export default class StandardCalendar extends React.Component {
       onIntervalRemove = {this.handleEventRemove}
       setSelectedIntervals = {this.setSelectedIntervals}
       onEventClick = {this.handleEventRemove} // function(){console.log("clicked on event");}
-      eventSpacing = {0}
+      eventSpacing = {0} // <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
     />
-    <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
+    <button onClick={handleAuthClick}>Load Gcal</button>
     <button onClick={this.updateAvailabilities}>Save</button>
     </div>
   }
