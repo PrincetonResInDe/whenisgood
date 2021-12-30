@@ -1,35 +1,20 @@
 import React from 'react';
 import StandardCalendar from './StandardCalendar';
+import { useParams } from "react-router";
+import moment from 'moment-timezone';
 
-export default class Respond extends React.Component {
-   constructor(props) {
-     super(props);
-     this.state = {
-       eventUUID: "d4c1e321-4b18-11ec-9e15-12f59f6291df",
-       eventName: "Event Name",
-       eventDescription: "Event Description"
-     }
-   }
-
-
-   render() {
-  	 let renderCalendar = (
-        	<div>
-			<StandardCalendar eventUUID={this.state.eventUUID}/>
-		</div>
- 	 );
-   
-
-     return (
-       <div>
-          <div>
-                <h1>{this.state.eventName}</h1>
-                <h3>{this.state.eventDescription}</h3>
-          </div>
-          <div>
-                {renderCalendar}
-          </div>
-       </div>
-	 );
-   }
+export default function Respond(props) {
+    let { UUID } = useParams();
+    let event = props.events.find(event => {
+      return event.UUID === UUID;
+    });
+    return (
+      <div>
+        <div>
+            <h1>{event["name"]}</h1>
+            <h3>{event["description"]}</h3>
+        </div>
+        <StandardCalendar event={event}/>
+      </div>
+    )
 }

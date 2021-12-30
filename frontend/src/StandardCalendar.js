@@ -10,23 +10,18 @@ export default class StandardCalendar extends React.Component {
     this.state = {
       loaded: false,
       lastUid: 0,
-      selectedIntervals: [],
-      eventData: { // take from props
-        'timeMin': "2021-11-22T00:00:00.000Z",
-        'timeMax': "2021-11-29T00:00:00.000Z"
-      }
+      selectedIntervals: [], // take from props  firstDay={moment(event["startDate"])} numberOfDays={7}
+      event: this.props.event
     }
     this.updateAvailabilities = this.updateAvailabilities.bind(this)
-    this.loadGoogleCalendar = this.loadGoogleCalendar.bind(this)
     this.setSelectedIntervals = this.setSelectedIntervals.bind(this)
   }
 
   componentDidMount() {
     this.setState({loaded: false});
-    //this.loadGoogleCalendar();
     const request = {
       sp_name: "getAvailabilities",
-      params: [this.props.eventUUID]
+      params: [this.state.event["UUID"]]
     }
     fetch("/api", {
       method: "POST",
@@ -59,7 +54,7 @@ export default class StandardCalendar extends React.Component {
   updateAvailabilities() {
     const request = {
       sp_name: "deleteAvailabilities",
-      params: [this.props.eventUUID]
+      params: [this.state.event["UUID"]]
     };
     fetch("/api", {
       method: "POST",
@@ -74,7 +69,7 @@ export default class StandardCalendar extends React.Component {
         const request = {
           sp_name: "addAvailability",
           params: [
-                    this.props.eventUUID, 
+                    this.state.event["UUID"], 
                     avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"), 
                     avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
                   ]
@@ -88,35 +83,6 @@ export default class StandardCalendar extends React.Component {
         });
       }
     });
-  }
-
-  loadGoogleCalendar() {
-    const request = {
-      timeMin: "2021-11-22",
-      timeMax: "2021-11-29"
-    }
-    fetch("http://localhost:5000/importgcal", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-      })
-      .then(response => response.json())
-      .then(events => {
-        events.forEach(event => {
-          this.state.selectedIntervals.push(
-            {
-              uid: this.state.lastUid,
-              start: moment(event.start.dateTime),
-              end: moment(event.end.dateTime),
-              value: event.summary,
-              type: "gcalevent"
-            }
-          )
-          this.state.lastUid++;
-        });
-      });
   }
 
   handleEventRemove = (event) => {
@@ -168,8 +134,8 @@ export default class StandardCalendar extends React.Component {
     return <div><WeekCalendar
       startTime = {moment({h: 7, m: 15})}
       endTime = {moment({h: 22, m: 15})}
-      firstDay = {moment("2021-11-22")}
-      numberOfDays = {7}
+      firstDay = {moment(this.state.event["startDate"])}
+      numberOfDays = {moment(this.state.event["endDate"]).diff(moment(this.state.event["startDate"]), "days")+1}
       scaleFormat = {"HH:mm"}
       dayFormat = {"ddd. MM.DD"}
       //showModalCase = {["edit", "delete"]}

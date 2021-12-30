@@ -60,8 +60,8 @@ function listUpcomingEvents() {
     */
     gapi.client.calendar.events.list({
         'calendarId': 'primary',
-        'timeMin': state.eventData["timeMin"],
-        'timeMax': state.eventData["timeMax"],
+        'timeMin': moment(state.event["startDate"]).format(),
+        'timeMax': moment(state.event["endDate"]).format(),
         'singleEvents': true,
         'orderBy': 'startTime'
     }).then(function(response) {
