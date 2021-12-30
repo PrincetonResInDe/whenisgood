@@ -7,8 +7,8 @@ from oauth2client import client
 import os
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app, resources={r'/*' : {'origins': ['http://localhost:3000']}})
+app = Flask(__name__, static_folder='frontend/build', static_url_path='/')
+#CORS(app, resources={r'/*' : {'origins': ['http://localhost:3000']}})
 app.secret_key = os.environ.get("APP_SECRET_KEY")
 
 cas_client = CASClient(
@@ -20,11 +20,10 @@ cas_client = CASClient(
 def index():
     if "netID" not in session:
         return redirect(url_for("login"))
-    return redirect("http://localhost:3000/")
+    return app.send_static_file("index.html")
 
 @app.route("/api", methods=["POST"])
 def api():
-    session["netID"] = "ls3841"
     if "netID" not in session:
         return redirect(url_for("login"))
     data = request.get_json()
