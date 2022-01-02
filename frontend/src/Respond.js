@@ -10,7 +10,7 @@ export default function Respond(props) {
     });
     return (
       <div>
-        <div>
+        <div style={{textAlign: "center"}}>
             <h1>{event["name"]}</h1>
             <h3>{event["description"]}</h3>
         </div>

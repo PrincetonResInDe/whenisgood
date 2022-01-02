@@ -1,16 +1,20 @@
 import moment from 'moment-timezone';
 
+// make this file into react component
+
 let gapi = window.gapi
 let CLIENT_ID = "1061583639488-bdq4tj8c6s0fnhi9j8sqnavl9lg7goqp.apps.googleusercontent.com"
 let API_KEY = "AIzaSyC6QyV6gGcWALwMIKdhBgAzgks_Iel54Zk"
 let DISCOVERY_DOCS=["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
 let SCOPES = "https://www.googleapis.com/auth/calendar.events"
 let state = null;
+let callback = null;
 
 //export a function that gets start time(date picker), location, name 
-export const handleClientLoad = (calendarState) => {
+export const handleClientLoad = (calendarState, callbackFunc) => {
     gapi.load('client:auth2', () => {
         state = calendarState;
+        callback = callbackFunc;
         initClient();
     });
 }
@@ -78,5 +82,6 @@ function listUpcomingEvents() {
             )
             state.lastUid++;
           });
+        callback();
     });
 }

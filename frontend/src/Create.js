@@ -66,7 +66,7 @@ export default class Create extends React.Component {
             return <Navigate to='/'/>;
         }
         return (
-            <div>
+            <div style={{padding: "10px"}}>
                 <h1>Create New Event</h1>
                 <form onSubmit={event => this.addEvent(event)}>
                     <p>Name:</p>
@@ -74,9 +74,9 @@ export default class Create extends React.Component {
                     <p>Description:</p>
                     <p><input type="text" value={this.state.description} onChange={this.handleDescription} /></p>
                     <p>Start Date:</p>
-                    <p><input type="text" value={this.state.startDate} onChange={this.handleStartDate} /></p>
+                    <p><input type="date" value={this.state.startDate} onChange={this.handleStartDate} /></p>
                     <p>End Date:</p>
-                    <p><input type="text" value={this.state.endDate} onChange={this.handleEndDate} /></p>
+                    <p><input type="date" value={this.state.endDate} onChange={this.handleEndDate} /></p>
                     <p><input type="submit" class="greenbutton" value="Submit" /></p>
                 </form>
             </div>

@@ -274,7 +274,7 @@ var WeekCalendar = function (_React$Component) {
             }
 
             // need to fix this because gcal events keep getting smaller when green selection added
-            left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * (beforeIntersectionNumber + afterIntersectionNumber - Math.max(0, availabilityOverlap-1));
+            left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection)) * (beforeIntersectionNumber + Math.max(0, availabilityOverlap-1)); // + afterIntersectionNumber
             var height = (endY - startY) * cellHeight;
             var eventWrapperStyle = {
               top: top,

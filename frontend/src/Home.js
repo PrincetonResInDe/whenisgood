@@ -29,7 +29,7 @@ export default class Home extends React.Component {
             links.push(<ResponseLink key={event["UUID"]} event={event}/>);
         });
         return (
-        <div>
+        <div style={{padding: "10px"}}>
             <h1>My Events</h1>
             <Link to="/create">
                 <h3>
