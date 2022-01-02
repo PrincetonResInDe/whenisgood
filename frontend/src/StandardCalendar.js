@@ -87,6 +87,10 @@ export default class StandardCalendar extends React.Component {
           }
         });
       }
+    ).then(
+      data => {
+        alert("Saved");
+      }
     );
   }
 
