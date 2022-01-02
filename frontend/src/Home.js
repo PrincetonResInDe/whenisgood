@@ -31,6 +31,11 @@ export default class Home extends React.Component {
         return (
         <div>
             <h1>My Events</h1>
+            <Link to="/create">
+                <h3>
+                   Create new event
+                </h3>
+            </Link>
             <br />
             {links}
         </div>);

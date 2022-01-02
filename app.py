@@ -22,6 +22,12 @@ def index():
         return redirect(url_for("login"))
     return app.send_static_file("index.html")
 
+@app.errorhandler(404)   
+def not_found(e):
+    if "netID" not in session:
+        return redirect(url_for("login"))
+    return app.send_static_file('index.html')
+
 @app.route("/api", methods=["POST"])
 def api():
     if "netID" not in session:
