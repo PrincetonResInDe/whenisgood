@@ -3,17 +3,66 @@ import StandardCalendar from './StandardCalendar';
 import { useParams } from "react-router";
 import moment from 'moment-timezone';
 
+class RespondPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            event: {
+                name: "",
+                description: "",
+                startDate: "",
+                endDate: "",
+                UUID: "",
+                isRecurring: ""
+            },
+            loaded: false
+        }
+    }
+    getEvent(callback) {
+        const request = {
+            sp_name: "getEvent",
+            params: [this.props.eventUUID]
+        }
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request),
+        })
+        .then(response => response.json())
+        .then(events => {
+                this.state.event.name = events[0]["name"];
+                this.state.event.description = events[0]["description"];
+                this.state.event.startDate = events[0]["startDate"];
+                this.state.event.endDate = events[0]["endDate"];
+                this.state.event.UUID = events[0]["UUID"];
+                this.state.event.isRecurring = events[0]["isRecurring"];
+                this.setState({loaded: true});
+        });
+    }
+    componentDidMount() {
+        this.getEvent();
+    }
+    render() {
+        let {event, loaded} = this.state;
+        if(loaded) {
+            return (
+                <div>
+                    <div style={{textAlign: "center"}}>
+                        <h2>{event.name} - {event.description}</h2>
+                    </div>
+                    <StandardCalendar event={event}/>
+                </div>
+            );
+        }
+        return <div></div>
+    }
+}
+
 export default function Respond(props) {
     let { UUID } = useParams();
-    let event = props.events.find(event => {
-      return event.UUID === UUID;
-    });
     return (
-      <div>
-        <div style={{textAlign: "center"}}>
-          <h2>{event["name"]} - {event["description"]}</h2>
-        </div>
-        <StandardCalendar event={event}/>
-      </div>
-    )
+        <RespondPage eventUUID={UUID}/>
+    );
 }

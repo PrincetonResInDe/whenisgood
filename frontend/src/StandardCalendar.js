@@ -24,7 +24,7 @@ export default class StandardCalendar extends React.Component {
   }
   componentDidMount() {
     const request = {
-      sp_name: "getAvailabilities",
+      sp_name: "getUserAvailabilities",
       params: [this.state.event["UUID"]]
     }
     fetch("/api", {
