@@ -7,11 +7,10 @@ class ResponseLink extends React.Component {
     }
     render() {
         let url = "/respond/" + this.props.event["UUID"]
+        let edit = "/edit/" + this.props.event["UUID"]
         return (
             <div>
-                <Link to={url}>
-                    {this.props.event["name"]} - {this.props.event["description"]}
-                </Link>
+                <Link to={url}>{this.props.event["name"]}</Link> - <Link to={edit}>Edit</Link>
                 <br />
                 <br />
             </div>
@@ -29,8 +28,8 @@ export default class Home extends React.Component {
             links.push(<ResponseLink key={event["UUID"]} event={event}/>);
         });
         return (
-        <div style={{padding: "10px"}}>
-            <h1>My Events</h1>
+        <div style={{padding: "16px"}}>
+            <h2>My Dashboard</h2>
             <Link to="/create">
                 <h3>
                    Create new event

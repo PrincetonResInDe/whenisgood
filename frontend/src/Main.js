@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './Home'
 import Respond from './Respond'
 import Create from './Create'
+import Navbar from './Navbar';
+import Edit from './Edit';
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -43,10 +45,12 @@ export default class Main extends React.Component {
         if (loaded) {
             return (
                 <div>
+                    <Navbar loggedIn={true}/>
                     <Routes>
                         <Route path='/' element={<Home events={events}/>}></Route>
                         <Route path='/respond/:UUID' element={<Respond events={events}/>}></Route>
                         <Route path='/create' element={<Create refresh={this.getEvents}/>}></Route>
+                        <Route path='/edit/:UUID' element={<Edit events={events} refresh={this.getEvents}/>}></Route>
                     </Routes> 
                 </div>
               );
