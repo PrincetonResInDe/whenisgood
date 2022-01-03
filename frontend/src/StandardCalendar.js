@@ -19,7 +19,6 @@ export default class StandardCalendar extends React.Component {
     this.setGcalLoaded = this.setGcalLoaded.bind(this)
   }
   setGcalLoaded() {
-    console.log("gcal loaded");
     this.setState({gcalLoaded: true});
   }
   componentDidMount() {
@@ -67,29 +66,32 @@ export default class StandardCalendar extends React.Component {
       },
       body: JSON.stringify(request),
     }).then(data => {
+        let availabilityString = "";
         this.state.selectedIntervals.forEach(avail => {
           if (avail.type == "event") {
-            const request = {
-              sp_name: "addAvailability",
-              params: [
-                        this.state.event["UUID"], 
-                        avail.start.clone().utc().format("YYYY-M-D HH:mm:ss"), 
-                        avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
-                      ]
-            };
-            fetch("/api", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify(request),
-            });
+            let startTime = avail.start.clone().utc().format("YYYY-M-D HH:mm:ss")
+            let endTime = avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
+            availabilityString += startTime + ',' + endTime + ';';
           }
         });
-      }
-    ).then(
-      data => {
-        alert("Saved");
+        const request = {
+          sp_name: "saveAvailabilityArray",
+          params: [
+                    this.state.event["UUID"],
+                    availabilityString
+                  ]
+        };
+        fetch("/api", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(request),
+        }).then(
+          data => {
+            alert("Saved");
+          }
+        );
       }
     );
   }

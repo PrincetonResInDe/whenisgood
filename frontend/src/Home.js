@@ -6,11 +6,12 @@ class ResponseLink extends React.Component {
         super(props);
     }
     render() {
-        let url = "/respond/" + this.props.event["UUID"]
+        let respond = "/respond/" + this.props.event["UUID"]
         let edit = "/edit/" + this.props.event["UUID"]
+        let results = "/results/" + this.props.event["UUID"]
         return (
             <div>
-                <Link to={url}>{this.props.event["name"]}</Link> - <Link to={edit}>Edit</Link>
+                {this.props.event["name"]} - <Link to={respond}>Respond</Link> - <Link to={edit}>Edit</Link> - <Link to={results}>Results</Link>
                 <br />
                 <br />
             </div>

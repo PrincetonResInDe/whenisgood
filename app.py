@@ -25,6 +25,7 @@ def index():
 @app.errorhandler(404)   
 def not_found(e):
     if "netID" not in session:
+        session["next"] = request.url
         return redirect(url_for("login"))
     return app.send_static_file('index.html')
 
@@ -52,6 +53,8 @@ def login():
     session["netID"] = user
     session["name"] = attributes["displayname"]
     call_proc("login", (session["netID"], session["name"]))
+    if "next" in session:
+        next = session.pop("next")
     return redirect(next)
 
 @app.route("/logout")
@@ -63,7 +66,7 @@ def logout():
 @app.route("/logout_callback")
 def logout_callback():
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run()
