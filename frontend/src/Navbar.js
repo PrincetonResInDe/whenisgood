@@ -9,16 +9,16 @@ export default class Navbar extends React.Component {
         if(this.props.loggedIn) {
             return (
                 <div class="topnav">
-                    <p>TigerMeet</p>
+                    <h2 style={{pointerEvents: "none"}}>TigerMeet</h2>
                     <div class="topnav-right">
                         <Link to={"/"}>
-                            Dashboard
+                            <h2>Dashboard</h2>
                         </Link>
                         <Link to="/">
-                            About
+                            <h2>About</h2>
                         </Link>
                         <a href="/logout">
-                            Log Out
+                            <h2>Log Out</h2>
                         </a>
                     </div>
                 </div>
@@ -26,13 +26,13 @@ export default class Navbar extends React.Component {
         }
         return (
             <div class="topnav">
-                <p>TigerMeet</p>
+                <h2>TigerMeet</h2>
                 <div class="topnav-right">
                     <Link to="/">
-                        About
+                        <h2>About</h2>
                     </Link>
                     <a href="/login">
-                        Log In
+                        <h2>Log In</h2>
                     </a>
                 </div>
             </div>

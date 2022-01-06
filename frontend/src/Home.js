@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import Card from 'react-bootstrap/Card';
 
 class EventLink extends React.Component {
     constructor(props) {
@@ -25,14 +26,26 @@ class EventLink extends React.Component {
         let respond = "/respond/" + this.props.event["UUID"]
         let edit = "/edit/" + this.props.event["UUID"]
         let results = "/results/" + this.props.event["UUID"]
-        let del = "/delete/" + this.props.event["UUID"]
         return (
             <div>
-                {this.props.event["name"]} - <Link to={respond}>Respond</Link> - <Link to={edit}>Edit</Link> - <a href="#" onClick={this.deleteEvent}>Delete</a> - <Link to={results}>Results</Link>
-                <br />
-                <br />
+                <Card style={{width:'18rem', height:'12rem'}}>
+                    <Card.Body>
+                        <div style={{height:'8rem'}}>
+                            <Card.Title>{this.props.event["name"]}</Card.Title>
+                            <Card.Text>
+                                {this.props.event["description"]}
+                            </Card.Text>
+                        </div>
+                        <footer>
+                            <Card.Link href={respond}>Respond</Card.Link>
+                            <Card.Link href={edit}>Edit</Card.Link>
+                            <Card.Link onClick={this.deleteEvent}>Delete</Card.Link>
+                            <Card.Link href={results}>Results</Card.Link>
+                        </footer>
+                    </Card.Body>
+                </Card>
             </div>
-        )
+        );
     }
 }
 
@@ -44,9 +57,19 @@ class ResponseLink extends React.Component {
         let respond = "/respond/" + this.props.response["UUID"]
         return (
             <div>
-                {this.props.response["name"]} - <Link to={respond}>Edit Response</Link>
-                <br />
-                <br />
+                <Card style={{width:'18rem', height:'12rem'}}>
+                    <Card.Body>
+                        <div style={{height:'8rem'}}>
+                            <Card.Title>{this.props.response["name"]}</Card.Title>
+                            <Card.Text>
+                                {this.props.response["description"]}
+                            </Card.Text>
+                        </div>
+                        <footer>
+                            <Card.Link href={respond}>Edit Response</Card.Link>
+                        </footer>
+                    </Card.Body>
+                </Card>
             </div>
         )
     }
@@ -67,18 +90,22 @@ export default class Home extends React.Component {
         })
         return (
         <div style={{padding: "16px"}}>
-            <h2>My Events</h2>
+            <h3>My Events</h3>
             <Link to="/create">
-                <h3>
+                <h5>
                    Create new event
-                </h3>
+                </h5>
             </Link>
             <br />
-            {eventLinks}
+            <div style={{ display: "flex", flexWrap: "wrap" }}> 
+                {eventLinks}
+            </div>
             <br />
-            <h2>My Responses</h2>
+            <h3>My Responses</h3>
             <br />
-            {responseLinks}
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {responseLinks}
+            </div>
         </div>);
     }
 }

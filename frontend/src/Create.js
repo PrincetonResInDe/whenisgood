@@ -67,7 +67,7 @@ export default class Create extends React.Component {
         }
         return (
             <div style={{padding: "16px"}}>
-                <h2>Create New Event</h2>
+                <h3>Create New Event</h3>
                 <form onSubmit={event => this.addEvent(event)}>
                     <p>Name:</p>
                     <p><input type="text" value={this.state.name} onChange={this.handleName}/></p>

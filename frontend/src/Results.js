@@ -37,7 +37,7 @@ class ResultsPage extends React.Component {
         if(loaded) {
             return (
                 <div style={{padding: "16px"}}>
-                    <h2>Results</h2>
+                    <h3>Results</h3>
                     <div>
                         {results}
                     </div>

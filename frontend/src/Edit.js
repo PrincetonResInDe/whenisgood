@@ -70,7 +70,7 @@ class EditPrefilled extends React.Component {
         }
         return (
             <div style={{padding: "16px"}}>
-                <h2>Edit Event</h2>
+                <h3>Edit Event</h3>
                 <form onSubmit={event => this.editEvent(event)}>
                     <p>Name:</p>
                     <p><input type="text" value={this.state.name} onChange={this.handleName}/></p>

@@ -22,6 +22,22 @@ class RespondPage extends React.Component {
     setLoaded() {
         this.setState({loaded: true});
     }
+    addResponse() {
+        const request = {
+            sp_name: "addResponse",
+            params: [this.props.eventUUID]
+        }
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request),
+        }).then(data => {
+                this.props.refresh();
+            }
+        );
+    }
     getEvent() {
         const request = {
             sp_name: "getEvent",
@@ -42,41 +58,26 @@ class RespondPage extends React.Component {
                 this.state.event.endDate = events[0]["endDate"];
                 this.state.event.UUID = events[0]["UUID"];
                 this.state.event.isRecurring = events[0]["isRecurring"];
-                this.props.refresh(this.setLoaded);
+                this.setLoaded();
+                this.addResponse();
         });
     }
-    addResponse() {
-        const request = {
-            sp_name: "addResponse",
-            params: [this.props.eventUUID]
-        }
-        fetch("/api", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(request),
-        }).then(data => {
-                this.getEvent();
-            }
-        );
-    }
     componentDidMount() {
-        this.addResponse();
+        this.getEvent();
     }
     render() {
         let {event, loaded} = this.state;
         if(loaded) {
             return (
                 <div>
-                    <div style={{textAlign: "center"}}>
-                        <h2>{event.name} - {event.description}</h2>
+                    <div style={{textAlign: "center", padding: "10px"}}>
+                        <h3>{event.name} - {event.description}</h3>
                     </div>
                     <StandardCalendar event={event}/>
                 </div>
             );
         }
-        return <div></div>
+        return <div></div>;
     }
 }
 

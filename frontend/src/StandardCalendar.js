@@ -9,17 +9,16 @@ export default class StandardCalendar extends React.Component {
     super(props);
     this.state = {
       loaded: false,
-      gcalLoaded: false,
       lastUid: 0,
       selectedIntervals: [], // take from props  firstDay={moment(event["startDate"])} numberOfDays={7}
       event: this.props.event
     }
     this.updateAvailabilities = this.updateAvailabilities.bind(this)
     this.setSelectedIntervals = this.setSelectedIntervals.bind(this)
-    this.setGcalLoaded = this.setGcalLoaded.bind(this)
+    this.setLoaded = this.setLoaded.bind(this)
   }
-  setGcalLoaded() {
-    this.setState({gcalLoaded: true});
+  setLoaded() {
+    this.setState({loaded: true});
   }
   componentDidMount() {
     const request = {
@@ -49,8 +48,7 @@ export default class StandardCalendar extends React.Component {
         });
       })
       .then(data => {
-          handleClientLoad(this.state, this.setGcalLoaded);
-          this.setState({loaded: true});
+          handleClientLoad(this.state, this.setLoaded);
       });
   }
 
@@ -139,9 +137,6 @@ export default class StandardCalendar extends React.Component {
   }
 
   render() {
-    if (!this.state.loaded) {
-      return <div></div>
-    }
     return <div><WeekCalendar
       startTime = {moment({h: 7, m: 0})}
       endTime = {moment({h: 22, m: 15})}
@@ -160,7 +155,7 @@ export default class StandardCalendar extends React.Component {
       eventSpacing = {0} // <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
     />
     <div style={{textAlign: "right", padding: "10px"}}>
-      <button class="bluebutton" onClick={handleAuthClick} disabled={this.state.gcalLoaded}>Load Google Calendar</button>
+      <button class="bluebutton" onClick={handleAuthClick} disabled={this.state.loaded}>Load Google Calendar</button>
       <button class="greenbutton" onClick={this.updateAvailabilities}>Save</button>
     </div>
     </div>
