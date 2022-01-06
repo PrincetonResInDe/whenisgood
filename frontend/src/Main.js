@@ -12,9 +12,10 @@ export default class Main extends React.Component {
         super(props);
         this.state = {
             events: [],
+            responses: [],
             loaded: false
         };
-        this.getEvents = this.getEvents.bind(this)
+        this.getResponses = this.getResponses.bind(this)
     }
     getEvents(callback) {
         const request = {
@@ -35,23 +36,45 @@ export default class Main extends React.Component {
                 this.state.events.push(event);
             });
             this.setState({loaded: true});
-            callback();
+            if (callback) {
+                callback();
+            }
+        });
+    }
+    getResponses(callback) {
+        const request = {
+            sp_name: "getResponses",
+            params: []
+        }
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request),
+        }).then(response => response.json())
+        .then(responses => {
+            this.setState({responses: []});
+            responses.forEach(response => {
+                this.state.responses.push(response);
+            });
+            this.getEvents(callback);
         });
     }
     componentDidMount() {
-        this.getEvents(function() {});
+        this.getResponses();
     }
     render() {
-        let {events, loaded} = this.state;
+        let {events, responses, loaded} = this.state;
         if (loaded) {
             return (
                 <div>
                     <Navbar loggedIn={true}/>
                     <Routes>
-                        <Route path='/' element={<Home events={events}/>}></Route>
-                        <Route path='/respond/:UUID' element={<Respond/>}></Route>
-                        <Route path='/create' element={<Create refresh={this.getEvents}/>}></Route>
-                        <Route path='/edit/:UUID' element={<Edit events={events} refresh={this.getEvents}/>}></Route>
+                        <Route path='/' element={<Home events={events} responses={responses} refresh={this.getResponses}/>}></Route>
+                        <Route path='/respond/:UUID' element={<Respond refresh={this.getResponses}/>}></Route>
+                        <Route path='/create' element={<Create refresh={this.getResponses}/>}></Route>
+                        <Route path='/edit/:UUID' element={<Edit events={events} refresh={this.getResponses}/>}></Route>
                         <Route path='/results/:UUID' element={<Results/>}></Route>
                     </Routes> 
                 </div>

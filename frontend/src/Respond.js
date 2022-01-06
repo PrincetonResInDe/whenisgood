@@ -17,8 +17,12 @@ class RespondPage extends React.Component {
             },
             loaded: false
         }
+        this.setLoaded = this.setLoaded.bind(this);
     }
-    getEvent(callback) {
+    setLoaded() {
+        this.setState({loaded: true});
+    }
+    getEvent() {
         const request = {
             sp_name: "getEvent",
             params: [this.props.eventUUID]
@@ -38,11 +42,27 @@ class RespondPage extends React.Component {
                 this.state.event.endDate = events[0]["endDate"];
                 this.state.event.UUID = events[0]["UUID"];
                 this.state.event.isRecurring = events[0]["isRecurring"];
-                this.setState({loaded: true});
+                this.props.refresh(this.setLoaded);
         });
     }
+    addResponse() {
+        const request = {
+            sp_name: "addResponse",
+            params: [this.props.eventUUID]
+        }
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(request),
+        }).then(data => {
+                this.getEvent();
+            }
+        );
+    }
     componentDidMount() {
-        this.getEvent();
+        this.addResponse();
     }
     render() {
         let {event, loaded} = this.state;
@@ -63,6 +83,6 @@ class RespondPage extends React.Component {
 export default function Respond(props) {
     let { UUID } = useParams();
     return (
-        <RespondPage eventUUID={UUID}/>
+        <RespondPage eventUUID={UUID} refresh={props.refresh}/>
     );
 }
