@@ -37,10 +37,18 @@ class EventLink extends React.Component {
                             </Card.Text>
                         </div>
                         <footer>
-                            <Card.Link href={respond}>Respond</Card.Link>
-                            <Card.Link href={edit}>Edit</Card.Link>
-                            <Card.Link onClick={this.deleteEvent}>Delete</Card.Link>
-                            <Card.Link href={results}>Results</Card.Link>
+                            <Card.Link>
+                                <Link to={respond}>Respond</Link>
+                            </Card.Link>
+                            <Card.Link>
+                                <Link to={edit}>Edit</Link>
+                            </Card.Link>
+                            <Card.Link onClick={this.deleteEvent}>
+                                Delete
+                            </Card.Link>
+                            <Card.Link>
+                                <Link to={results}>Results</Link>
+                            </Card.Link>
                         </footer>
                     </Card.Body>
                 </Card>
@@ -66,7 +74,9 @@ class ResponseLink extends React.Component {
                             </Card.Text>
                         </div>
                         <footer>
-                            <Card.Link href={respond}>Edit Response</Card.Link>
+                            <Card.Link>
+                                <Link to={respond}>Edit Response</Link>
+                            </Card.Link>
                         </footer>
                     </Card.Body>
                 </Card>
