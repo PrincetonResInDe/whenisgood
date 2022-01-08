@@ -39,7 +39,8 @@ export default class Create extends React.Component {
           body: JSON.stringify(request),
         })
         .then(data => {
-                this.props.refresh(this.setRedirect);
+                this.props.refresh();
+                this.setRedirect();
             }
         );
     }

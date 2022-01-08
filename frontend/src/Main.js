@@ -31,11 +31,11 @@ export default class Main extends React.Component {
         })
         .then(response => response.json())
         .then(events => {
-            this.setState({events: []});
+            const newEvents = [];
             events.forEach(event => {
-                this.state.events.push(event);
+                newEvents.push(event);
             });
-            this.setState({loaded: true});
+            this.setState({events: newEvents, loaded: true});
             if (callback) {
                 callback();
             }
@@ -54,10 +54,11 @@ export default class Main extends React.Component {
             body: JSON.stringify(request),
         }).then(response => response.json())
         .then(responses => {
-            this.setState({responses: []});
+            const newResponses = []
             responses.forEach(response => {
-                this.state.responses.push(response);
+                newResponses.push(response);
             });
+            this.setState({responses: newResponses});
             this.getEvents(callback);
         });
     }

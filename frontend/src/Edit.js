@@ -41,8 +41,8 @@ class EditPrefilled extends React.Component {
           body: JSON.stringify(request),
         })
         .then(data => {
-                // redirect on success, need error popup with toastr.js or something
-                this.props.refresh(this.setRedirect);
+                this.props.refresh();
+                this.setRedirect();
             }
         );
     }
