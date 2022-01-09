@@ -31,7 +31,7 @@ class EditPrefilled extends React.Component {
         }
         const request = {
           sp_name: "editEvent",
-          params: [this.props.event.UUID, this.state.name, this.state.description, this.state.startDate, this.state.endDate, 0]
+          params: [this.props.event.UUID, this.state.name, this.state.description, this.state.startDate, this.state.endDate, 60, 0]
         };
         fetch("/api", {
           method: "POST",

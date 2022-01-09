@@ -29,7 +29,7 @@ export default class Create extends React.Component {
         }
         const request = {
           sp_name: "addEvent",
-          params: [this.state.name, this.state.description, this.state.startDate, this.state.endDate, 0]
+          params: [this.state.name, this.state.description, this.state.startDate, this.state.endDate, 60, 0]
         };
         fetch("/api", {
           method: "POST",

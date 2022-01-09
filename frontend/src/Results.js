@@ -9,9 +9,9 @@ class ResultsPage extends React.Component {
             loaded: false
         }
     }
-    getAllAvailabilities() {
+    getResults() {
         const request = {
-            sp_name: "getAllAvailabilities",
+            sp_name: "getResults",
             params: [this.props.eventUUID]
         }
         fetch("/api", {
@@ -24,13 +24,13 @@ class ResultsPage extends React.Component {
         .then(response => response.json())
         .then(results => {
             results.forEach(result => {
-                this.state.results.push(<p>{result.name}: {result.startTime} - {result.endTime}</p>);
+                this.state.results.push(<p>{result.optionStartDate} | {result.available_cnt} | {result.available_names} | {result.not_available_cnt} | {result.not_available_names}</p>);
             })
             this.setState({loaded: true});
         });
     }
     componentDidMount() {
-        this.getAllAvailabilities();
+        this.getResults();
     }
     render() {
         let {results, loaded} = this.state;
