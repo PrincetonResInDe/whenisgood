@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      var results = [{"available_cnt":3,"available_names":"Leo Stepanewk;testuser0ISQDKK8;testuser4P61UDRF","count":1,"not_available_cnt":2,"not_available_names":"testuser0ISQDKK8;testuserCUOQK3N9","window_endTime":"Sun, 02 Jan 2022 18:45:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 19:45:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 19:30:00 GMT","window_startTime":"Sun, 02 Jan 2022 18:30:00 GMT"},{"available_cnt":3,"available_names":"testuser0ISQDKK8;testuser4P61UDRF;testuserCUOQK3N9","count":2,"not_available_cnt":2,"not_available_names":"Leo Stepanewk;testuser0ISQDKK8","window_endTime":"Sun, 02 Jan 2022 19:30:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 20:30:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 20:15:00 GMT","window_startTime":"Sun, 02 Jan 2022 19:00:00 GMT"},{"available_cnt":2,"available_names":"Leo Stepanewk;testuser4P61UDRF","count":2,"not_available_cnt":3,"not_available_names":"testuser0ISQDKK8;testuserCUOQK3N9","window_endTime":"Sun, 02 Jan 2022 18:30:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 19:30:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 19:15:00 GMT","window_startTime":"Sun, 02 Jan 2022 18:00:00 GMT"},{"available_cnt":2,"available_names":"testuser0ISQDKK8;testuser4P61UDRF","count":1,"not_available_cnt":3,"not_available_names":"Leo Stepanewk;testuser0ISQDKK8;testuserCUOQK3N9","window_endTime":"Sun, 02 Jan 2022 19:00:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 20:00:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 19:45:00 GMT","window_startTime":"Sun, 02 Jan 2022 18:45:00 GMT"},{"available_cnt":2,"available_names":"testuser4P61UDRF;testuserCUOQK3N9","count":2,"not_available_cnt":3,"not_available_names":"Leo Stepanewk;testuser0ISQDKK8","window_endTime":"Sun, 02 Jan 2022 20:00:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 21:00:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 20:45:00 GMT","window_startTime":"Sun, 02 Jan 2022 19:30:00 GMT"},{"available_cnt":1,"available_names":"Leo Stepanewk","count":12,"not_available_cnt":4,"not_available_names":"testuser0ISQDKK8;testuser4P61UDRF;testuserCUOQK3N9","window_endTime":"Sun, 02 Jan 2022 18:00:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 19:00:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 18:45:00 GMT","window_startTime":"Sun, 02 Jan 2022 15:00:00 GMT"},{"available_cnt":1,"available_names":"testuserCUOQK3N9","count":5,"not_available_cnt":4,"not_available_names":"Leo Stepanewk;testuser0ISQDKK8;testuser4P61UDRF","window_endTime":"Sun, 02 Jan 2022 21:15:00 GMT","window_endTime_plus":"Sun, 02 Jan 2022 22:15:00 GMT","window_endTime_plus_less_15":"Sun, 02 Jan 2022 22:00:00 GMT","window_startTime":"Sun, 02 Jan 2022 20:00:00 GMT"},{"available_cnt":1,"available_names":"testuser0ISQDKK8","count":4,"not_available_cnt":4,"not_available_names":"Leo Stepanewk;testuser0ISQDKK8;testuser4P61UDRF;testuserCUOQK3N9","window_endTime":"Tue, 04 Jan 2022 19:30:00 GMT","window_endTime_plus":"Tue, 04 Jan 2022 20:30:00 GMT","window_endTime_plus_less_15":"Tue, 04 Jan 2022 20:15:00 GMT","window_startTime":"Tue, 04 Jan 2022 18:30:00 GMT"}] 
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+
+      function createCustomTooltip(names) {
+        let tooltip = '<ol>';
+        names.split(';').forEach(name => {
+          tooltip += '<li>' + name + '</li>';
+        });
+        return tooltip + '</ol>';
+      }
+
+      function drawChart() {
+        // Create the data table.
+        const formatted_results = [["Date and Time", "Available", { role: 'tooltip', p: {"html":true} }, "Not Available", { role: 'tooltip', p: {"html":true} }]];
+        results.forEach(result => {
+          const window = result.window_startTime + " - " + result.window_endTime_plus_less_15
+          formatted_results.push([window, result.available_cnt, createCustomTooltip(result.available_names), result.not_available_cnt, createCustomTooltip(result.not_available_names)])
+        });
+
+        var data = new google.visualization.arrayToDataTable(formatted_results);
+
+        // Set chart options
+        const options = {
+          isStacked: true,
+          chartArea: {"width": "75%", "height": "75%"}, // percentage of chart div
+          vAxis: {format: '0'},
+          colors: ["#21B74B", "#e71d36"], //#A30000
+          focusTarget: 'category',
+          tooltip: { isHtml: true }
+          //bar: {groupWidth: 100},
+        }
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the chart-->
+    <div id="chart_div" style="width: 100%; height: 100%; margin: auto;"></div>
+  </body>
+</html>
