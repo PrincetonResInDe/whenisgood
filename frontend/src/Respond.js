@@ -22,22 +22,6 @@ class RespondPage extends React.Component {
     setLoaded() {
         this.setState({loaded: true});
     }
-    addResponse() {
-        const request = {
-            sp_name: "addResponse",
-            params: [this.props.eventUUID]
-        }
-        fetch("/api", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(request),
-        }).then(data => {
-                this.props.refresh();
-            }
-        );
-    }
     getEvent() {
         const request = {
             sp_name: "getEvent",
@@ -59,7 +43,6 @@ class RespondPage extends React.Component {
                 this.state.event.UUID = events[0]["UUID"];
                 this.state.event.isRecurring = events[0]["isRecurring"];
                 this.setLoaded();
-                this.addResponse();
         });
     }
     componentDidMount() {

@@ -20,6 +20,7 @@ export const handleClientLoad = (calendarState, callbackFunc) => {
 }
 
 export const handleAuthClick = (event) => {
+    console.log("handling auth click");
     gapi.auth2.getAuthInstance().signIn();
 }
 

@@ -18,6 +18,7 @@ export default class StandardCalendar extends React.Component {
     this.setLoaded = this.setLoaded.bind(this)
   }
   setLoaded() {
+    console.log("setting loaded true");
     this.setState({loaded: true});
   }
   componentDidMount() {
@@ -49,13 +50,25 @@ export default class StandardCalendar extends React.Component {
       })
       .then(data => {
           handleClientLoad(this.state, this.setLoaded);
+          this.setLoaded();
       });
   }
 
   updateAvailabilities() {
+    let availabilityString = "";
+    this.state.selectedIntervals.forEach(avail => {
+      if (avail.type == "event") {
+        let startTime = avail.start.clone().utc().format("YYYY-M-D HH:mm:ss")
+        let endTime = avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
+        availabilityString += startTime + ',' + endTime + ';';
+      }
+    });
     const request = {
-      sp_name: "deleteAvailabilities",
-      params: [this.state.event["UUID"]]
+      sp_name: "saveAvailabilityArray",
+      params: [
+                this.state.event["UUID"],
+                availabilityString
+              ]
     };
     fetch("/api", {
       method: "POST",
@@ -63,33 +76,9 @@ export default class StandardCalendar extends React.Component {
           "Content-Type": "application/json",
       },
       body: JSON.stringify(request),
-    }).then(data => {
-        let availabilityString = "";
-        this.state.selectedIntervals.forEach(avail => {
-          if (avail.type == "event") {
-            let startTime = avail.start.clone().utc().format("YYYY-M-D HH:mm:ss")
-            let endTime = avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
-            availabilityString += startTime + ',' + endTime + ';';
-          }
-        });
-        const request = {
-          sp_name: "saveAvailabilityArray",
-          params: [
-                    this.state.event["UUID"],
-                    availabilityString
-                  ]
-        };
-        fetch("/api", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-          },
-          body: JSON.stringify(request),
-        }).then(
-          data => {
-            alert("Saved");
-          }
-        );
+    }).then(
+      data => {
+        alert("Saved");
       }
     );
   }
@@ -137,6 +126,7 @@ export default class StandardCalendar extends React.Component {
   }
 
   render() {
+    console.log("rendering");
     return <div><WeekCalendar
       startTime = {moment({h: 7, m: 0})}
       endTime = {moment({h: 22, m: 15})}
@@ -155,7 +145,7 @@ export default class StandardCalendar extends React.Component {
       eventSpacing = {0} // <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
     />
     <div style={{textAlign: "right", padding: "10px"}}>
-      <button class="bluebutton" onClick={handleAuthClick} disabled={this.state.loaded}>Load Google Calendar</button>
+      <button class="bluebutton" onClick={handleAuthClick} disabled={!this.state.loaded}>Load Google Calendar</button>
       <button class="greenbutton" onClick={this.updateAvailabilities}>Save</button>
     </div>
     </div>

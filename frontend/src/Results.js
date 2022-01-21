@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from "react-router";
 import ResultsChart from './ResultsChart';
+import useGoogleCharts from './useGoogleCharts';
 
 class ResultsPage extends React.Component {
     constructor(props) {
@@ -8,10 +9,16 @@ class ResultsPage extends React.Component {
         this.state = {
             results: [],
             data: [],
-            loaded: false
+            loaded: false,
+            chartWidth: window.innerWidth,
+            chartHeight: window.innerHeight
         }
         this.createCustomTooltip = this.createCustomTooltip.bind(this);
     }
+    updateDimensions = () => {
+        console.log("updating dimensions");
+        this.setState({ chartWidth: window.innerWidth, chartHeight: window.innerHeight });
+    };
     createCustomTooltip(names) {
         let tooltip = '<ol>';
         names.split(';').forEach(name => {
@@ -45,18 +52,26 @@ class ResultsPage extends React.Component {
         });
     }
     componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions);
         this.getResults();
     }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
     render() {
-        let {results, loaded} = this.state;
+        console.log("rendering");
+        let {results, data, loaded, chartWidth, chartHeight} = this.state;
+        console.log(chartWidth);
+        console.log(chartHeight);
         if(loaded) {
+            console.log("loaded");
             return (
-                <div style={{padding: "16px", width: "100%", height: "100%", margin: "auto"}}>
+                <div style={{padding: "16px", width: chartWidth, height: chartHeight}}>
                     <h3>Results</h3>
                     <div>
                         {results}
                     </div>
-                    <ResultsChart data={this.state.data}/>
+                    <ResultsChart google={this.props.google} width={chartWidth} height={chartHeight}/>
                 </div>
             );
         }
@@ -66,7 +81,8 @@ class ResultsPage extends React.Component {
 
 export default function Results(props) {
     let { UUID } = useParams();
+    const google = useGoogleCharts()
     return (
-        <ResultsPage eventUUID={UUID}/>
+        <ResultsPage eventUUID={UUID} google={google}/>
     );
 }
