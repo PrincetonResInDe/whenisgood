@@ -76,7 +76,7 @@ export default class Main extends React.Component {
                         <Route path='/respond/:UUID' element={<Respond refresh={this.getResponses}/>}></Route>
                         <Route path='/create' element={<Create refresh={this.getResponses}/>}></Route>
                         <Route path='/edit/:UUID' element={<Edit events={events} refresh={this.getResponses}/>}></Route>
-                        <Route path='/results/:UUID' element={<Results/>}></Route>
+                        <Route path='/results/:UUID' element={<Results events={events}/>}></Route>
                     </Routes> 
                 </div>
               );

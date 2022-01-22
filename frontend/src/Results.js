@@ -1,24 +1,16 @@
 import React from 'react';
 import { useParams } from "react-router";
 import ResultsChart from './ResultsChart';
-import useGoogleCharts from './useGoogleCharts';
 
 class ResultsPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            results: [],
             data: [],
-            loaded: false,
-            chartWidth: window.innerWidth,
-            chartHeight: window.innerHeight
+            loaded: false
         }
         this.createCustomTooltip = this.createCustomTooltip.bind(this);
     }
-    updateDimensions = () => {
-        console.log("updating dimensions");
-        this.setState({ chartWidth: window.innerWidth, chartHeight: window.innerHeight });
-    };
     createCustomTooltip(names) {
         let tooltip = '<ol>';
         names.split(';').forEach(name => {
@@ -52,26 +44,29 @@ class ResultsPage extends React.Component {
         });
     }
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions);
         this.getResults();
     }
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions);
-    }
     render() {
-        console.log("rendering");
-        let {results, data, loaded, chartWidth, chartHeight} = this.state;
-        console.log(chartWidth);
-        console.log(chartHeight);
+        let {data, loaded} = this.state;
+        let event = this.props.event;
         if(loaded) {
-            console.log("loaded");
             return (
-                <div style={{padding: "16px", width: chartWidth, height: chartHeight}}>
-                    <h3>Results</h3>
-                    <div>
-                        {results}
+                <div style={{padding: "16px", margin: "auto"}}>
+                    <h3 style={{textAlign: "center"}}>Results of {event.name}</h3>
+                    <div style={{width: "50%", margin: "auto"}}>
+                        <br />
+                        <b>Description:</b> {event.description}
+                        <br />
+                        <br />
+                        <b>Length:</b> {event.length} minutes
+                        <br />
+                        <br />
+                        <b>Location:</b> {event.location}
+                        <br />
                     </div>
-                    <ResultsChart google={this.props.google} width={chartWidth} height={chartHeight}/>
+                    <div style={{margin: "auto", width: "80%"}}>
+                        <ResultsChart data={data}/>
+                    </div>
                 </div>
             );
         }
@@ -81,8 +76,10 @@ class ResultsPage extends React.Component {
 
 export default function Results(props) {
     let { UUID } = useParams();
-    const google = useGoogleCharts()
+    let event = props.events.find(event => {
+        return event.UUID === UUID;
+    });
     return (
-        <ResultsPage eventUUID={UUID} google={google}/>
+        <ResultsPage eventUUID={UUID} event={event}/>
     );
 }

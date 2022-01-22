@@ -126,7 +126,6 @@ export default class StandardCalendar extends React.Component {
   }
 
   render() {
-    console.log("rendering");
     return <div><WeekCalendar
       startTime = {moment({h: 7, m: 0})}
       endTime = {moment({h: 22, m: 15})}
