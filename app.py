@@ -1,14 +1,12 @@
 from api import call_proc
 from cas import CASClient
-import datetime
-from flask import Flask, redirect, render_template, request, session, url_for, jsonify, make_response
-import json
-from oauth2client import client
+from flask import Flask, redirect, request, session, url_for, jsonify
 import os
-from flask_cors import CORS
+from email.message import EmailMessage
+import smtplib
+import ssl
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='/')
-#CORS(app, resources={r'/*' : {'origins': ['http://localhost:3000']}})
 app.secret_key = os.environ.get("APP_SECRET_KEY")
 
 cas_client = CASClient(
@@ -37,6 +35,21 @@ def api():
     data["params"].insert(0, session["netID"])
     result = call_proc(data["sp_name"], data["params"])
     return jsonify(result)
+
+@app.route("/email", methods=["POST"])
+def email():
+    if "netID" not in session:
+        return redirect(url_for("login"))
+    data = request.get_json()
+    msg = EmailMessage()
+    msg["To"] = os.environ.get("EMAIL") # loop over emails in data
+    msg["From"] = os.environ.get("EMAIL")
+    msg["Subject"] = "TigerMeet Invitation"
+    msg.set_content("You have been invited!")
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=ssl.create_default_context()) as server:
+        server.login(msg["From"], os.environ.get("EMAIL_PASSWORD"))
+        server.send_message(msg)
+        server.quit()
 
 @app.route("/login")
 def login():
