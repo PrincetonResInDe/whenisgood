@@ -267,3 +267,31 @@
 	float: right;
 }
 
+.tooltipbutton {
+	background-color: #004777; /* Blue */
+	border: none;
+	color: white;
+	padding: 8px 16px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: bold;
+  }
+
+  .tooltipbutton:hover {
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+
+  .center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+
+  td, th {
+	text-align: center;
+	padding: 8px;
+	padding-top: 0px;
+	width: 150px;
+  }

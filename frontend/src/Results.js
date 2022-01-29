@@ -11,12 +11,26 @@ class ResultsPage extends React.Component {
         }
         this.createCustomTooltip = this.createCustomTooltip.bind(this);
     }
-    createCustomTooltip(names) {
-        let tooltip = '<ol>';
-        names.split(';').forEach(name => {
-          tooltip += '<li>' + name + '</li>';
-        });
-        return tooltip + '</ol>';
+    createCustomTooltip(window, available_names, not_available_names) {
+        let tooltip = '<div style="padding: 20px"><div class="center"><b style="font-size: 20px">' + window + '</b></div>';
+        tooltip += '<div class="center" style="padding: 8px"><button class="tooltipbutton">Choose This Date & Time</button></div>';
+        tooltip += '<table class="center" style="font-size: 16px"><th style="color: #77DD77">Available</th><th style="color: #EF6461">Not Available</th>'; //  font-weight: bold
+        let i = 0;
+        let j = 0;
+        while (i < available_names.length && j < not_available_names.length) {
+          tooltip += '<tr><td>' + available_names[i] + '</td><td>' + not_available_names[j] + '</td></tr>'
+          i++;
+          j++;
+        }
+        while (i < available_names.length) {
+          tooltip += '<tr><td>' + available_names[i] + '</td><td></td></tr>';
+          i++;
+        }
+        while (j < not_available_names.length) {
+          tooltip += '<tr><td></td><td>' + not_available_names[j] + '</td></tr>';
+          j++;
+        }
+        return tooltip + '</table></div>';
     }
     getResults() {
         const request = {
@@ -32,14 +46,14 @@ class ResultsPage extends React.Component {
         })
         .then(response => response.json())
         .then(results => {
-            this.state.data.push(["Date and Time", "Available", { role: 'tooltip', p: { "html": true } }, "Not Available", { role: 'tooltip', p: { "html": true } }]);
+            this.state.data.push(["Date and Time", { role: 'tooltip', p: { "html": true } }, "Available", "Not Available"]);
             results.forEach(result => {
                 const startDate = result.window_startTime.slice(4, 16)
                 const startTime = result.window_startTime.slice(17, 22)
                 const endTime = result.window_endTime.slice(17, 22)
-                const window = startDate + '\n' + startTime + '-' + endTime
-                this.state.data.push([window, result.available_cnt, this.createCustomTooltip(result.available_names), result.not_available_cnt, this.createCustomTooltip(result.not_available_names)])
-            });
+                const window = startDate + '\n' + startTime + "-" + endTime
+                this.state.data.push([window, this.createCustomTooltip(window, result.available_names.split(';'), result.not_available_names.split(';')), result.available_cnt, result.not_available_cnt]) // { role: 'tooltip', p: { "html": true } }
+              });
             this.setState({loaded: true});
         });
     }
