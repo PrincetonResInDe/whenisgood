@@ -1,6 +1,41 @@
 <html>
 
 <head>
+  <style>
+    .tooltipbutton {
+      background-color: #004777; /* Blue */
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .tooltipbutton:hover {
+      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    td, th {
+      text-align: center;
+      padding: 8px;
+      padding-top: 0px;
+      width: 50%;
+    }
+
+    table {
+      table-layout: fixed ;
+      width: 100% ;
+    }
+  </style>
   <!--Load the AJAX API-->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -25,23 +60,37 @@
     // instantiates the pie chart, passes in the data and
     // draws it.
 
-    function createCustomTooltip(names) {
-      let tooltip = '<ol>';
-      names.split(';').forEach(name => {
-        tooltip += '<li>' + name + '</li>';
-      });
-      return tooltip + '</ol>';
+    function createCustomTooltip(window, available_names, not_available_names) {
+      let tooltip = '<div style="padding: 25px"><div class="center"><b style="font-size: 24px">' + window + '</b></div>';
+      tooltip += '<div class="center" style="padding: 8px"><button class="tooltipbutton">Choose This Date & Time</button></div>';
+      tooltip += '<table class="center" style="font-size: 20px;"><th style="color: #77DD77">Available</th><th style="color: #EF6461">Not Available</th>'; //  font-weight: bold
+      let i = 0;
+      let j = 0;
+      while (i < available_names.length && j < not_available_names.length) {
+        tooltip += '<tr><td>' + available_names[i] + '</td><td>' + not_available_names[j] + '</td></tr>'
+        i++;
+        j++;
+      }
+      while (i < available_names.length) {
+        tooltip += '<tr><td>' + available_names[i] + '</td><td></td></tr>';
+        i++;
+      }
+      while (j < not_available_names.length) {
+        tooltip += '<tr><td></td><td>' + not_available_names[j] + '</td></tr>';
+        j++;
+      }
+      return tooltip + '</table></div>';
     }
 
     function drawChart() {
       // Create the data table.
-      const formatted_results = [["Date and Time", "Available", { role: 'tooltip', p: { "html": true } }, "Not Available", { role: 'tooltip', p: { "html": true } }]];
+      const formatted_results = [["Date and Time", { role: 'tooltip', p: { "html": true } }, "Available",  "Not Available"]]; // { role: 'tooltip', p: { "html": true } }
       results.forEach(result => {
         const startDate = result.window_startTime.slice(4, 16)
         const startTime = result.window_startTime.slice(17, 22)
         const endTime = result.window_endTime_plus_less_15.slice(17, 22)
         const window = startDate + '\n' + startTime + "-" + endTime
-        formatted_results.push([window, result.available_cnt, createCustomTooltip(result.available_names), result.not_available_cnt, createCustomTooltip(result.not_available_names)])
+        formatted_results.push([window, createCustomTooltip(window, result.available_names.split(';'), result.not_available_names.split(';')), result.available_cnt, result.not_available_cnt]) // { role: 'tooltip', p: { "html": true } }
       });
       formatted_results.length = 6;
       var data = new google.visualization.arrayToDataTable(formatted_results);
@@ -53,7 +102,7 @@
         vAxis: { format: '0', minorGridlines:{count:0}},
         colors: ["#77DD77", "#EF6461"], //#A30000
         focusTarget: 'category',
-        tooltip: { isHtml: true },
+        tooltip: { isHtml: true, trigger: "both" },
         //bar: {groupWidth: 100},
       }
 
