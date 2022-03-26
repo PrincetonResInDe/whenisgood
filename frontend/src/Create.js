@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom'
+import { Row, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 export default class Create extends React.Component {
     constructor(props) {
@@ -7,9 +8,9 @@ export default class Create extends React.Component {
         this.state = {
             name: null,
             description: null,
-            group: null,
+            group: "default",
             location: null,
-            eventType: null,
+            eventType: "default",
             length: null,
             isRecurring: 0,
             startDate: null,
@@ -64,7 +65,8 @@ export default class Create extends React.Component {
     }
 
     handleStartDate(event) {
-        this.setState({startDate: event.target.value});
+        this.setState({startDate: event.target.value, 
+                    dueDate: event.target.value});
     }
     
     handleEndDate(event) {
@@ -123,30 +125,43 @@ export default class Create extends React.Component {
         }
         return (
             <div style={{padding: "16px"}}>
-                <h3>Create New Event</h3>
-                <form onSubmit={event => this.addEvent(event)}>
-                    <p>Name:</p>
-                    <p><input type="text" value={this.state.name} onChange={this.handleName}/></p>
-                    <p>Description:</p>
-                    <p><input type="text" value={this.state.description} onChange={this.handleDescription} /></p>
-                    <p>Group:</p>
-                    <p><input type="text" value={this.state.group} onChange={this.handleGroup} /></p>
-                    <p>Location:</p>
-                    <p><input type="text" value={this.state.location} onChange={this.handleLocation} /></p>
-                    <p>Event Type:</p>
-                    <p><input type="text" value={this.state.eventType} onChange={this.handleEventType} /></p>
-                    <p>Length:</p>
-                    <p><input type="number" min={15} value={this.state.length} onChange={this.handleLength} /></p>
-                    <p>Recurring:</p>
-                    <p><input type="checkbox" onChange={this.handleIsRecurring} /></p>
-                    <p>Start Date:</p>
-                    <p><input type="date" value={this.state.startDate} onChange={this.handleStartDate} /></p>
-                    <p>End Date:</p>
-                    <p><input type="date" value={this.state.endDate} onChange={this.handleEndDate} /></p>
-                    <p>Due Date:</p>
-                    <p><input type="date" value={this.state.dueDate} onChange={this.handleDueDate} /></p>
-                    <p><input type="submit" class="greenbutton" value="Create" /></p>
-                </form>
+                <Row>
+                    <Col>
+                        <Form onSubmit={event => this.addEvent(event)}>
+                            <h3>Create New Event</h3>
+                                <FormGroup>
+                                    <Label for="name">Name:</Label>
+                                    <Input type="text" id="name" value={this.state.name} onChange={this.handleName} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="description">Description:</Label>
+                                    <Input type="text" id="description" value={this.state.description} onChange={this.handleDescription} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="location">Location:</Label>
+                                    <Input type="text" id="location" value={this.state.location} onChange={this.handleLocation} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="length">Length:</Label>
+                                    <Input type="number" id="length" min={15} value={this.state.length} onChange={this.handleLength} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="startDate">Start Date:</Label>
+                                    <Input type="date" id="startDate" value={this.state.startDate} onChange={this.handleStartDate} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="endDate">End Date:</Label>
+                                    <Input type="date" id="endDate" value={this.state.endDate} onChange={this.handleEndDate} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="isRecurring">Recurring:</Label>
+                                    <Input type="checkbox" id="isRecurring" onChange={this.handleIsRecurring} />
+                                </FormGroup>
+                            <Button color="primary">Submit</Button>
+                        </Form>
+                    </Col>
+                    <Col></Col>
+                </Row>
             </div>
         );
     }
@@ -165,5 +180,31 @@ endDate date
 dueDate date 
 timeCreated timestamp 
 UUID varchar(36)
+
+                
+<form onSubmit={event => this.addEvent(event)}>
+    <p>Name:</p>
+    <p><input type="text" value={this.state.name} onChange={this.handleName}/></p>
+    <p>Description:</p>
+    <p><input type="text" value={this.state.description} onChange={this.handleDescription} /></p>
+    <p>Group:</p>
+    <p><input type="text" value={this.state.group} onChange={this.handleGroup} /></p>
+    <p>Location:</p>
+    <p><input type="text" value={this.state.location} onChange={this.handleLocation} /></p>
+    <p>Event Type:</p>
+    <p><input type="text" value={this.state.eventType} onChange={this.handleEventType} /></p>
+    <p>Length:</p>
+    <p><input type="number" min={15} value={this.state.length} onChange={this.handleLength} /></p>
+    <p>Recurring:</p>
+    <p><input type="checkbox" onChange={this.handleIsRecurring} /></p>
+    <p>Start Date:</p>
+    <p><input type="date" value={this.state.startDate} onChange={this.handleStartDate} /></p>
+    <p>End Date:</p>
+    <p><input type="date" value={this.state.endDate} onChange={this.handleEndDate} /></p>
+    <p>Due Date:</p>
+    <p><input type="date" value={this.state.dueDate} onChange={this.handleDueDate} /></p>
+    <p><input type="submit" class="greenbutton" value="Create" /></p>
+                </form>
+
     */
 }

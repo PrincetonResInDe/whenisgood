@@ -19,6 +19,7 @@
     "react-scripts": "4.0.3",
     "react-week-calendar": "^0.1.3",
     "reactjs-popup": "^2.0.5",
+    "reactstrap": "^9.0.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

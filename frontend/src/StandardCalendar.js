@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment-timezone';
 import WeekCalendar from './WeekCalendar/WeekCalendar';
 import { handleClientLoad, handleAuthClick } from './gcal';
+import { Button } from 'reactstrap';
 
 export default class StandardCalendar extends React.Component {
 
@@ -144,9 +145,12 @@ export default class StandardCalendar extends React.Component {
       eventSpacing = {0} // <button onClick={this.loadGoogleCalendar}>Load Gcal</button>
     />
     <div style={{textAlign: "right", padding: "10px"}}>
-      <button class="bluebutton" onClick={handleAuthClick} disabled={!this.state.loaded}>Load Google Calendar</button>
-      <button class="greenbutton" onClick={this.updateAvailabilities}>Save</button>
+      <Button color="primary" onClick={handleAuthClick} disabled={!this.state.loaded}>Load Google Calendar</Button>
+      <Button color="success" onClick={this.updateAvailabilities}>Save</Button>
     </div>
     </div>
   }
 }
+/*
+      <button class="bluebutton" onClick={handleAuthClick} disabled={!this.state.loaded}>Load Google Calendar</button>
+      <button class="greenbutton" onClick={this.updateAvailabilities}>Save</button> */

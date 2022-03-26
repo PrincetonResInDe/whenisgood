@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from "react-router";
 import { Navigate } from 'react-router-dom'
 import moment from 'moment-timezone';
+import { Row, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class EditPrefilled extends React.Component {
     constructor(props) {
@@ -112,7 +113,50 @@ class EditPrefilled extends React.Component {
         }
         return (
             <div style={{padding: "16px"}}>
-                <h3>Edit Event</h3>
+                <Row>
+                    <Col>
+                        <Form onSubmit={event => this.editEvent(event)}>
+                            <h3>Edit Event</h3>
+                                <FormGroup>
+                                    <Label for="name">Name:</Label>
+                                    <Input type="text" id="name" value={this.state.name} onChange={this.handleName} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="description">Description:</Label>
+                                    <Input type="text" id="description" value={this.state.description} onChange={this.handleDescription} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="location">Location:</Label>
+                                    <Input type="text" id="location" value={this.state.location} onChange={this.handleLocation} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="length">Length:</Label>
+                                    <Input type="number" id="length" min={15} value={this.state.length} onChange={this.handleLength} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="startDate">Start Date:</Label>
+                                    <Input type="date" id="startDate" value={this.state.startDate} onChange={this.handleStartDate} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="endDate">End Date:</Label>
+                                    <Input type="date" id="endDate" value={this.state.endDate} onChange={this.handleEndDate} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="isRecurring">Recurring:</Label>
+                                    <Input type="checkbox" id="isRecurring" checked={this.state.isRecurring} onChange={this.handleIsRecurring} />
+                                </FormGroup>
+                            <Button color="primary">Save</Button>
+                        </Form>
+                    </Col>
+                    <Col></Col>
+                </Row>
+            </div>
+        );
+    }
+}
+
+/*
+<h3>Edit Event</h3>
                 <form onSubmit={event => this.editEvent(event)}>
                     <p>Name:</p>
                     <p><input type="text" value={this.state.name} onChange={this.handleName}/></p>
@@ -136,10 +180,7 @@ class EditPrefilled extends React.Component {
                     <p><input type="date" value={this.state.dueDate} onChange={this.handleDueDate} /></p>
                     <p><input type="submit" class="greenbutton" value="Save" /></p>
                 </form>
-            </div>
-        );
-    }
-}
+*/
 
 export default function Edit(props) {
     let { UUID } = useParams();
