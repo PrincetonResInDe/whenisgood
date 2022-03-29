@@ -1,7 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, IconButton, Button } from "@material-ui/core";
+import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
 
 class EventLink extends React.Component {
   constructor(props) {
@@ -36,16 +39,22 @@ class EventLink extends React.Component {
               <Card.Text>{this.props.event["description"]}</Card.Text>
             </div>
             <footer>
-              <Card.Link>
-                <Link to={respond}>Respond</Link>
-              </Card.Link>
-              <Card.Link>
-                <Link to={edit}>Edit</Link>
-              </Card.Link>
-              <Card.Link onClick={this.deleteEvent}>Delete</Card.Link>
-              <Card.Link>
-                <Link to={results}>Results</Link>
-              </Card.Link>
+              <Button variant="text" href={respond}>
+                Respond
+              </Button>
+              <IconButton aria-label="edit" edge="end" href={edit}>
+                <ModeEditOutlineIcon />
+              </IconButton>
+              <IconButton
+                aria-lable="delete"
+                edge="end"
+                onClick={this.deleteEvent}
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+              <IconButton aria-label="results" edge="end" href={results}>
+                <EqualizerIcon />
+              </IconButton>
             </footer>
           </Card.Body>
         </Card>
@@ -75,8 +84,8 @@ class MainColumn extends React.Component {
             {this.props.title}
           </h4>
         </Grid>
-        <Grid item style={{ width: "100%" }}>
-          {this.props.title == "Drafts" && (
+        {this.props.title == "Drafts" && (
+          <Grid item style={{ width: "100%" }}>
             <Card style={{ height: "4 rem" }}>
               <Card.Body>
                 <div style={{ height: "100%" }}>
@@ -88,8 +97,8 @@ class MainColumn extends React.Component {
                 </div>
               </Card.Body>
             </Card>
-          )}
-        </Grid>
+          </Grid>
+        )}
         {this.props.cards}
       </Grid>
     );
@@ -103,7 +112,7 @@ class ResponseLink extends React.Component {
   render() {
     let respond = "/respond/" + this.props.response["UUID"];
     return (
-      <Grid item style={{ maxWidth: "18rem", width: "100%" }}>
+      <Grid item style={{ width: "100%" }}>
         <Card style={{ height: "12rem" }}>
           <Card.Body>
             <div style={{ height: "8rem" }}>
@@ -125,7 +134,17 @@ class ResponseLink extends React.Component {
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { host: true };
   }
+
+  changeToHost = () => {
+    this.setState({ host: true });
+  }
+
+  changeToAttendee = () => {
+    this.setState({ host: false });
+  }
+
   render() {
     let eventLinks = [];
     let responseLinks = [];
@@ -144,11 +163,18 @@ export default class Home extends React.Component {
       );
     });
 
-    const columns = [
+    const hostColumns = [
       { title: "Drafts", cards: eventLinks },
       { title: "Sent", cards: [] },
       { title: "All Responses In", cards: responseLinks },
       { title: "Final Date Set", cards: [] },
+    ];
+
+    const attendeeColumns = [
+      { title: "Need To Respond To", cards: [] },
+      { title: "Responded To", cards: [] },
+      { title: "Final Date Set", cards: [] },
+      { title: "Past Events", cards: [] },
     ];
 
     return (
@@ -159,9 +185,40 @@ export default class Home extends React.Component {
         justifyContent="space-between"
         spacing={6}
       >
-        {columns.map(({ title, cards }) => (
-          <MainColumn title={title} cards={cards} />
-        ))}
+        <Grid
+          item
+          container
+          spacing={2}
+          direction="row"
+          xs={12}
+          className="host-attendee"
+        >
+          <Grid item onClick={this.changeToHost}>
+            <h3
+              style={
+                !this.state.host ? { color: "rgba(160, 160, 160, 1)" } : {}
+              }
+            >
+              Host
+            </h3>
+          </Grid>
+
+          <Grid item onClick={this.changeToAttendee}>
+            <h3
+              style={this.state.host ? { color: "rgba(160, 160, 160, 1)" } : {}}
+            >
+              Attendee
+            </h3>
+          </Grid>
+        </Grid>
+
+        {this.state.host
+          ? hostColumns.map(({ title, cards }) => (
+              <MainColumn title={title} cards={cards} />
+            ))
+          : attendeeColumns.map(({ title, cards }) => (
+              <MainColumn title={title} cards={cards} />
+            ))}
       </Grid>
     );
   }
