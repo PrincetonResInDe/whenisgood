@@ -31,7 +31,7 @@ class EventLink extends React.Component {
     let edit = "/edit/" + this.props.event["UUID"];
     let results = "/results/" + this.props.event["UUID"];
     return (
-      <Grid item style={{ width: "100%" }}>
+      <Grid item style={{ width: "100%", minWidth: 250 }}>
         <Card style={{ height: "12rem" }}>
           <Card.Body>
             <div style={{ height: "8rem" }}>
@@ -76,6 +76,7 @@ class MainColumn extends React.Component {
         direction="column"
         justifyContent="flex-start"
         alignItems="flex-start"
+        style={{ minHeight: "50vh" }}
         xs={3}
         spacing={3}
       >
@@ -85,7 +86,7 @@ class MainColumn extends React.Component {
           </h4>
         </Grid>
         {this.props.title == "Drafts" && (
-          <Grid item style={{ width: "100%" }}>
+          <Grid item style={{ width: "100%", minWidth: 250 }}>
             <Card style={{ height: "4 rem" }}>
               <Card.Body>
                 <div style={{ height: "100%" }}>
@@ -112,7 +113,7 @@ class ResponseLink extends React.Component {
   render() {
     let respond = "/respond/" + this.props.response["UUID"];
     return (
-      <Grid item style={{ width: "100%" }}>
+      <Grid item style={{ width: "100%", minWidth: 250 }}>
         <Card style={{ height: "12rem" }}>
           <Card.Body>
             <div style={{ height: "8rem" }}>
@@ -139,15 +140,17 @@ export default class Home extends React.Component {
 
   changeToHost = () => {
     this.setState({ host: true });
-  }
+  };
 
   changeToAttendee = () => {
     this.setState({ host: false });
-  }
+  };
 
   render() {
     let eventLinks = [];
     let responseLinks = [];
+    let pastEvents = [];
+
     this.props.events.forEach((event) => {
       eventLinks.push(
         <EventLink
@@ -219,6 +222,14 @@ export default class Home extends React.Component {
           : attendeeColumns.map(({ title, cards }) => (
               <MainColumn title={title} cards={cards} />
             ))}
+        <Grid item container xs={12} spacing={3} direction="row">
+          <Grid item xs={12}>
+            <h4 style={{ borderBottom: "2px solid rgba(0, 71, 119, 1)" }}>
+              Past Events
+            </h4>
+          </Grid>
+          {pastEvents}
+        </Grid>
       </Grid>
     );
   }
