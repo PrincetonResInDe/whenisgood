@@ -242,6 +242,7 @@
 	background-color: #ffffff;
 	font-weight: bold;
 	border-bottom: 2px solid black;
+	/* padding: 24px; */
 }
 
 .topnav h2 {
@@ -251,6 +252,7 @@
 	padding: 14px 16px;
 	text-decoration: none;
 	margin: 0px;
+	transition: background-color 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 .topnav h2:hover {
@@ -295,3 +297,11 @@
 	padding-top: 0px;
 	width: 150px;
   }
+
+.parent-container {
+	padding: calc(1rem + 4vw);
+}
+
+.host-attendee h3 {
+	cursor: pointer;
+}
