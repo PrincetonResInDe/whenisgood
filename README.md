@@ -24,7 +24,7 @@ pip install -r requrements.txt
 ```bash
 
 # export secrets 
-export XXX=YYYY
+source secrets.txt
 
 # build the frontend
 cd frontend
