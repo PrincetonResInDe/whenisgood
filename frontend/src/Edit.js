@@ -39,7 +39,7 @@ class EditPrefilled extends React.Component {
     editEvent(event) {
         event.preventDefault()
         // do this required check properly
-        if(this.state.name == "" || this.state.startDate == "" || this.state.endDate == "") {
+        if(this.state.name === "" || this.state.startDate === "" || this.state.endDate === "") {
             return;
         }
         const request = {
@@ -86,7 +86,7 @@ class EditPrefilled extends React.Component {
     }
 
     handleIsRecurring(event) {
-        if (this.state.isRecurring == 0) {
+        if (this.state.isRecurring === 0) {
             this.setState({isRecurring: 1});
         }
         else {

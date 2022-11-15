@@ -1,5 +1,3 @@
-'use strict';
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -44,6 +42,7 @@ var DayCell = function (_React$Component) {
       if (e.button === 0) {
         _this.props.startSelection();
       }
+      // eslint-disable-next-line
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 

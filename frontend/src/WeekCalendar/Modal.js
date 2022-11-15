@@ -1,5 +1,3 @@
-'use strict';
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -57,6 +55,7 @@ var Modal = function (_React$Component) {
       _this.props.onSave({
         value: value
       });
+      // eslint-disable-next-line
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 

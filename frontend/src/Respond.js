@@ -1,7 +1,6 @@
 import React from "react";
 import StandardCalendar from "./StandardCalendar";
 import { useParams } from "react-router";
-import moment from "moment-timezone";
 
 class RespondPage extends React.Component {
   constructor(props) {
@@ -36,12 +35,16 @@ class RespondPage extends React.Component {
     })
       .then((response) => response.json())
       .then((events) => {
-        this.state.event.name = events[0]["name"];
-        this.state.event.description = events[0]["description"];
-        this.state.event.startDate = events[0]["startDate"];
-        this.state.event.endDate = events[0]["endDate"];
-        this.state.event.UUID = events[0]["UUID"];
-        this.state.event.isRecurring = events[0]["isRecurring"];
+        this.setState({
+          event: {
+            name: events[0]["name"],
+            description: events[0]["description"],
+            startDate: events[0]["startDate"],
+            endDate: events[0]["endDate"],
+            UUID: events[0]["UUID"],
+            isRecurring: events[0]["isRecurring"],
+          },
+        });
         this.setLoaded();
       });
   }

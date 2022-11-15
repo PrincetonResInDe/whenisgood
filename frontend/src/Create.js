@@ -57,7 +57,7 @@ export default class Create extends React.Component {
   }
 
   handleIsRecurring(event) {
-    if (this.state.isRecurring == 0) {
+    if (this.state.isRecurring === 0) {
       this.setState({ isRecurring: 1 });
     } else {
       this.setState({ isRecurring: 0 });
@@ -86,9 +86,9 @@ export default class Create extends React.Component {
     event.preventDefault();
     // do this required check properly
     if (
-      this.state.name == "" ||
-      this.state.startDate == "" ||
-      this.state.endDate == ""
+      this.state.name === "" ||
+      this.state.startDate === "" ||
+      this.state.endDate === ""
     ) {
       return;
     }

@@ -46,7 +46,7 @@ export default class StandardCalendar extends React.Component {
               type: "event"
             }
           )
-          this.state.lastUid++;
+          this.setState({ "lastUid": this.state.lastUid+1})
         });
       })
       .then(data => {
@@ -58,7 +58,7 @@ export default class StandardCalendar extends React.Component {
   updateAvailabilities() {
     let availabilityString = "";
     this.state.selectedIntervals.forEach(avail => {
-      if (avail.type == "event") {
+      if (avail.type === "event") {
         let startTime = avail.start.clone().utc().format("YYYY-M-D HH:mm:ss")
         let endTime = avail.end.clone().utc().format("YYYY-M-D HH:mm:ss")
         availabilityString += startTime + ',' + endTime + ';';
@@ -119,10 +119,10 @@ export default class StandardCalendar extends React.Component {
     });
   }
 
+  // TODO: check if my changes work (changed to setState)
   setSelectedIntervals = (intervals) => {
-    this.state.selectedIntervals.length = 0
     intervals.forEach(interval => {
-      this.state.selectedIntervals.push(interval);
+      this.setState({"selectedIntervals": [...this.state.selectedIntervals, interval]});
     });
   }
 

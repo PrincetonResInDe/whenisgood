@@ -1,5 +1,3 @@
-'use strict';
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -53,6 +51,7 @@ var DayColumn = function (_React$Component) {
       return function () {
         _this.props.onSelectionStart(col, row);
       };
+      // eslint-disable-next-line
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 

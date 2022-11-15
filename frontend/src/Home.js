@@ -46,7 +46,7 @@ class EventLink extends React.Component {
                 <ModeEditOutlineIcon />
               </IconButton>
               <IconButton
-                aria-lable="delete"
+                aria-label="delete"
                 edge="end"
                 onClick={this.deleteEvent}
               >
@@ -64,9 +64,6 @@ class EventLink extends React.Component {
 }
 
 class MainColumn extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -85,7 +82,7 @@ class MainColumn extends React.Component {
             {this.props.title}
           </h4>
         </Grid>
-        {this.props.title == "Drafts" && (
+        {this.props.title === "Drafts" && (
           <Grid item style={{ width: "100%", minWidth: 250 }}>
             <Card style={{ height: "4 rem" }}>
               <Card.Body>
@@ -107,9 +104,7 @@ class MainColumn extends React.Component {
 }
 
 class ResponseLink extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
   render() {
     let respond = "/respond/" + this.props.response["UUID"];
     return (

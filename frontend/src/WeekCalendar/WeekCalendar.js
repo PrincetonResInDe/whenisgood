@@ -1,5 +1,3 @@
-'use strict';
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -202,8 +200,8 @@ var WeekCalendar = function (_React$Component) {
           var newIntervals = [];
           var topInterval = null;
           intervals.forEach(function (interval) {
-            if (interval.type == "event") {
-              if (topInterval == null) {
+            if (interval.type === "event") {
+              if (topInterval === null) {
                 topInterval = interval;
               }
               else {
@@ -242,15 +240,15 @@ var WeekCalendar = function (_React$Component) {
             }
 
             var beforeIntersectionNumber = array.filter(function (i, i1) {
-              return i1 < index && interval.type == "gcalevent" && interval.start.isBefore(i.end); // interval.type == "gcalevent" && 
+              return i1 < index && interval.type === "gcalevent" && interval.start.isBefore(i.end); // interval.type === "gcalevent" && 
             }).length;
 
             var afterIntersectionNumber = array.filter(function (i, i1) {
-              return i1 > index && interval.type == "gcalevent" && interval.end.isAfter(i.start);
+              return i1 > index && interval.type === "gcalevent" && interval.end.isAfter(i.start);
             }).length;
 
             var availabilityOverlap = array.filter(function (i, i1) {
-              return interval.type == "gcalevent" && i.type == "event" && ((i1 < index && interval.start.isBefore(i.end)) || (i1 > index && interval.end.isAfter(i.start))); // interval.type == "gcalevent" && 
+              return interval.type === "gcalevent" && i.type === "event" && ((i1 < index && interval.start.isBefore(i.end)) || (i1 > index && interval.end.isAfter(i.start))); // interval.type === "gcalevent" && 
             }).length;
             //console.log(availabilityOverlap);
             
@@ -264,7 +262,7 @@ var WeekCalendar = function (_React$Component) {
             var width;
             var left;
 
-            if (interval.type == "event") {
+            if (interval.type === "event") {
               width = (columnDimensions[dayIndex].width - eventSpacing)
               //left = columnDimensions[dayIndex].left + (width + Math.floor(eventSpacing / groupIntersection));
             }
@@ -507,7 +505,7 @@ var _initialiseProps = function _initialiseProps() {
         scaleIntervals = _state3.scaleIntervals;
 
 
-    if (startSelectionPosition == null) {
+    if (startSelectionPosition === null) {
       return;
     }
 
